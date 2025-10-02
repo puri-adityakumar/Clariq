@@ -35,7 +35,7 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="section bg-gradient-to-br from-gray-50 to-white">
+    <section className="section">
       <div className="container">
         <motion.div 
           className="text-center mb-16"
@@ -44,16 +44,15 @@ export default function HowItWorks() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true, margin: "-100px" }}
         >
-          <h2 className="heading-2 mb-4">How CLARIQ Works</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Our streamlined process transforms prospect information into actionable 
-            sales intelligence in four simple steps.
+          <h2 className="heading-2 mb-5 font-heading">How CLARIQ Works</h2>
+          <p className="text-lg md:text-xl text-muted max-w-2xl mx-auto font-body leading-relaxed">
+            A tightly orchestrated intelligence pipeline turning raw signals into precision sales execution.
           </p>
         </motion.div>
 
         <div className="relative">
           {/* Timeline line */}
-          <div className="hidden md:block absolute left-1/2 transform -translate-x-0.5 w-0.5 h-full bg-gray-200"></div>
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-0.5 w-px h-full bg-gradient-to-b from-transparent via-white/10 to-transparent"></div>
 
           <div className="space-y-16">
             {steps.map((step, index) => (
@@ -77,27 +76,27 @@ export default function HowItWorks() {
                       transition: { duration: 0.3 }
                     }}
                   >
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="text-4xl">{step.icon}</div>
-                      <div className="text-2xl font-bold text-gray-300">{step.number}</div>
+                    <div className="flex items-center gap-4 mb-5">
+                      <div className="text-4xl select-none">{step.icon}</div>
+                      <div className="text-2xl font-bold text-muted">{step.number}</div>
                     </div>
                     
-                    <h3 className="heading-4 mb-3">{step.title}</h3>
-                    <p className="text-gray-600 mb-4">{step.description}</p>
-                    <p className="text-sm text-gray-500">{step.details}</p>
+                    <h3 className="heading-4 mb-3 font-heading tracking-tight">{step.title}</h3>
+                    <p className="text-muted mb-4 leading-relaxed font-body">{step.description}</p>
+                    <p className="text-sm text-muted leading-relaxed">{step.details}</p>
                   </motion.div>
                 </div>
 
                 {/* Timeline dot */}
                 <div className="hidden md:block">
                   <motion.div
-                    className="w-4 h-4 bg-black rounded-full relative z-10"
+                    className="w-4 h-4 rounded-full relative z-10 bg-white shadow-[0_0_0_4px_rgba(255,255,255,0.15)]"
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
                     transition={{ duration: 0.3, delay: index * 0.2 + 0.3 }}
                     viewport={{ once: true }}
                   >
-                    <div className="absolute inset-0 bg-black rounded-full animate-ping opacity-20"></div>
+                    <div className="absolute inset-0 rounded-full animate-ping opacity-30 bg-white"></div>
                   </motion.div>
                 </div>
 
@@ -118,8 +117,8 @@ export default function HowItWorks() {
           <motion.a
             href="#demo"
             className="btn btn-primary btn-lg"
-            whileHover={{ scale: 1.02, y: -2 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ y: -3 }}
+            whileTap={{ scale: 0.97 }}
           >
             Start Your Sales Intelligence Journey
           </motion.a>

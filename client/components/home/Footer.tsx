@@ -6,7 +6,8 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="relative pt-24 pb-12 overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_30%,rgba(255,255,255,0.05),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(255,255,255,0.04),transparent_55%)]" />
       <div className="container">
         <div className="py-16">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -18,10 +19,9 @@ export default function Footer() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <div className="font-brand text-2xl font-bold mb-4">CLARIQ</div>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                AI-powered sales intelligence that revolutionizes how teams prepare 
-                for and execute sales conversations.
+              <div className="font-brand text-3xl font-bold mb-4 tracking-wide">CLARIQ</div>
+              <p className="text-muted text-sm leading-relaxed">
+                AI-powered sales intelligence that compresses preparation time and amplifies deal execution with precision.
               </p>
             </motion.div>
 
@@ -32,13 +32,13 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              <h3 className="font-semibold mb-4">Product</h3>
+              <h3 className="font-semibold mb-4 text-foreground">Product</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="#features" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
-                <li><a href="#use-cases" className="text-gray-400 hover:text-white transition-colors">Use Cases</a></li>
-                <li><a href="#pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
-                <li><a href="#integrations" className="text-gray-400 hover:text-white transition-colors">Integrations</a></li>
-                <li><a href="#api" className="text-gray-400 hover:text-white transition-colors">API</a></li>
+                <li><a href="#features" className="text-muted hover:text-foreground transition-colors">Features</a></li>
+                <li><a href="#use-cases" className="text-muted hover:text-foreground transition-colors">Use Cases</a></li>
+                <li><a href="#pricing" className="text-muted hover:text-foreground transition-colors">Pricing</a></li>
+                <li><a href="#integrations" className="text-muted hover:text-foreground transition-colors">Integrations</a></li>
+                <li><a href="#api" className="text-muted hover:text-foreground transition-colors">API</a></li>
               </ul>
             </motion.div>
 
@@ -49,13 +49,13 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <h3 className="font-semibold mb-4">Company</h3>
+              <h3 className="font-semibold mb-4 text-foreground">Company</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="#about" className="text-gray-400 hover:text-white transition-colors">About</a></li>
-                <li><a href="#blog" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#careers" className="text-gray-400 hover:text-white transition-colors">Careers</a></li>
-                <li><a href="#press" className="text-gray-400 hover:text-white transition-colors">Press</a></li>
-                <li><a href="#contact" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#about" className="text-muted hover:text-foreground transition-colors">About</a></li>
+                <li><a href="#blog" className="text-muted hover:text-foreground transition-colors">Blog</a></li>
+                <li><a href="#careers" className="text-muted hover:text-foreground transition-colors">Careers</a></li>
+                <li><a href="#press" className="text-muted hover:text-foreground transition-colors">Press</a></li>
+                <li><a href="#contact" className="text-muted hover:text-foreground transition-colors">Contact</a></li>
               </ul>
             </motion.div>
 
@@ -66,13 +66,13 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.3 }}
               viewport={{ once: true }}
             >
-              <h3 className="font-semibold mb-4">Resources</h3>
+              <h3 className="font-semibold mb-4 text-foreground">Resources</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="#documentation" className="text-gray-400 hover:text-white transition-colors">Documentation</a></li>
-                <li><a href="#help" className="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#community" className="text-gray-400 hover:text-white transition-colors">Community</a></li>
-                <li><a href="#status" className="text-gray-400 hover:text-white transition-colors">Status</a></li>
-                <li><a href="#changelog" className="text-gray-400 hover:text-white transition-colors">Changelog</a></li>
+                <li><a href="#documentation" className="text-muted hover:text-foreground transition-colors">Documentation</a></li>
+                <li><a href="#help" className="text-muted hover:text-foreground transition-colors">Help Center</a></li>
+                <li><a href="#community" className="text-muted hover:text-foreground transition-colors">Community</a></li>
+                <li><a href="#status" className="text-muted hover:text-foreground transition-colors">Status</a></li>
+                <li><a href="#changelog" className="text-muted hover:text-foreground transition-colors">Changelog</a></li>
               </ul>
             </motion.div>
           </div>
@@ -80,25 +80,23 @@ export default function Footer() {
 
         {/* Bottom section */}
         <motion.div 
-          className="py-8 border-t border-gray-800"
+          className="py-8 border-t border-white/10"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           viewport={{ once: true }}
         >
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-sm text-gray-400">
-              © {currentYear} CLARIQ. All rights reserved.
-            </div>
+            <div className="text-sm text-muted">© {currentYear} CLARIQ. All rights reserved.</div>
             
             <div className="flex items-center gap-6 text-sm">
-              <a href="#privacy" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#privacy" className="text-muted hover:text-foreground transition-colors">
                 Privacy Policy
               </a>
-              <a href="#terms" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#terms" className="text-muted hover:text-foreground transition-colors">
                 Terms of Service
               </a>
-              <a href="#cookies" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#cookies" className="text-muted hover:text-foreground transition-colors">
                 Cookie Policy
               </a>
             </div>
@@ -106,7 +104,7 @@ export default function Footer() {
             <div className="flex items-center gap-4">
               <a 
                 href="https://twitter.com/clariq" 
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-muted hover:text-foreground transition-colors"
                 aria-label="Twitter"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -116,7 +114,7 @@ export default function Footer() {
               
               <a 
                 href="https://linkedin.com/company/clariq" 
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-muted hover:text-foreground transition-colors"
                 aria-label="LinkedIn"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -126,7 +124,7 @@ export default function Footer() {
               
               <a 
                 href="https://github.com/clariq" 
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-muted hover:text-foreground transition-colors"
                 aria-label="GitHub"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

@@ -48,7 +48,7 @@ const testimonials = [
 
 export default function SocialProof() {
   return (
-    <section className="section bg-gray-50">
+    <section className="section">
       <div className="container">
         {/* Stats Section */}
         <motion.div 
@@ -58,9 +58,9 @@ export default function SocialProof() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true, margin: "-100px" }}
         >
-          <h2 className="heading-3 mb-4">Trusted by Sales Teams Worldwide</h2>
-          <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
-            Leading companies rely on CLARIQ to power their sales intelligence and drive results.
+          <h2 className="heading-3 mb-6 font-heading">Trusted by Sales Teams Worldwide</h2>
+          <p className="text-lg md:text-xl text-muted mb-14 max-w-2xl mx-auto font-body leading-relaxed">
+            Leading teams choose CLARIQ to compress research cycles, unlock conversational precision and win more consistently.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -73,9 +73,9 @@ export default function SocialProof() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <div className="text-4xl font-bold text-black mb-2">{stat.number}</div>
-                <div className="text-lg font-semibold text-gray-900 mb-1">{stat.label}</div>
-                <div className="text-sm text-gray-600">{stat.description}</div>
+                <div className="text-4xl font-bold text-foreground mb-2">{stat.number}</div>
+                <div className="text-lg font-semibold text-foreground mb-1">{stat.label}</div>
+                <div className="text-sm text-muted">{stat.description}</div>
               </motion.div>
             ))}
           </div>
@@ -88,7 +88,7 @@ export default function SocialProof() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true, margin: "-100px" }}
         >
-          <h3 className="heading-4 text-center mb-12">What Our Customers Say</h3>
+          <h3 className="heading-4 text-center mb-12 font-heading">What Our Customers Say</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
@@ -105,15 +105,15 @@ export default function SocialProof() {
                   transition: { duration: 0.3 }
                 }}
               >
-                <div className="mb-6">
-                  <div className="text-2xl text-gray-400 mb-4">&ldquo;</div>
-                  <p className="text-gray-700 leading-relaxed">{testimonial.quote}</p>
+                <div className="mb-6 relative">
+                  <div className="text-2xl text-muted mb-4 select-none">&ldquo;</div>
+                  <p className="text-muted leading-relaxed">{testimonial.quote}</p>
                 </div>
                 
-                <div className="border-t border-gray-200 pt-4">
-                  <div className="font-semibold text-gray-900">{testimonial.author}</div>
-                  <div className="text-sm text-gray-600">{testimonial.role}</div>
-                  <div className="text-sm text-gray-500">{testimonial.company}</div>
+                <div className="border-t border-white/10 pt-4">
+                  <div className="font-semibold text-foreground">{testimonial.author}</div>
+                  <div className="text-sm text-muted">{testimonial.role}</div>
+                  <div className="text-sm text-muted/80">{testimonial.company}</div>
                 </div>
               </motion.div>
             ))}
@@ -128,14 +128,13 @@ export default function SocialProof() {
           transition={{ duration: 0.6, delay: 0.4 }}
           viewport={{ once: true }}
         >
-          <p className="text-sm text-gray-500 mb-6">Trusted by teams at</p>
-          <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
-            {/* Placeholder company logos */}
-            <div className="h-8 w-20 bg-gray-300 rounded"></div>
-            <div className="h-8 w-24 bg-gray-300 rounded"></div>
-            <div className="h-8 w-16 bg-gray-300 rounded"></div>
-            <div className="h-8 w-28 bg-gray-300 rounded"></div>
-            <div className="h-8 w-20 bg-gray-300 rounded"></div>
+          <p className="text-sm text-muted mb-6 tracking-wide uppercase">Trusted by teams at</p>
+          <div className="flex flex-wrap justify-center items-center gap-10 opacity-40">
+            <div className="h-8 w-20 bg-white/10 rounded"></div>
+            <div className="h-8 w-24 bg-white/10 rounded"></div>
+            <div className="h-8 w-16 bg-white/10 rounded"></div>
+            <div className="h-8 w-28 bg-white/10 rounded"></div>
+            <div className="h-8 w-20 bg-white/10 rounded"></div>
           </div>
         </motion.div>
       </div>

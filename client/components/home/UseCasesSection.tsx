@@ -67,10 +67,9 @@ export default function UseCasesSection() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true, margin: "-100px" }}
         >
-          <h2 className="heading-2 mb-4">Powerful Use Cases</h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            From autonomous AI voice agents to human sales enablement, 
-            CLARIQ adapts to your team&apos;s needs and sales methodology.
+          <h2 className="heading-2 mb-5 font-heading">Powerful Use Cases</h2>
+          <p className="text-lg md:text-xl text-muted max-w-3xl mx-auto leading-relaxed font-body">
+            Autonomous AI execution and human augmentation — orchestrated from a unified intelligence layer.
           </p>
         </motion.div>
 
@@ -80,21 +79,21 @@ export default function UseCasesSection() {
             {useCases.map((useCase, index) => (
               <motion.button
                 key={index}
-                className={`w-full text-left p-6 rounded-xl border-2 transition-all duration-300 ${
+                className={`w-full text-left p-5 rounded-lg transition-all duration-400 relative overflow-hidden ${
                   activeUseCase === index 
-                    ? 'border-black bg-black text-white' 
-                    : 'border-gray-200 bg-white hover:border-gray-300'
+                    ? 'bg-white text-black shadow-[0_0_0_1px_rgba(255,255,255,0.25)]' 
+                    : 'glass text-foreground hover:bg-white/10'
                 }`}
                 onClick={() => setActiveUseCase(index)}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.97 }}
               >
                 <div className="flex items-center gap-4">
                   <div className="text-3xl">{useCase.icon}</div>
                   <div>
-                    <h3 className="heading-5 mb-2">{useCase.title}</h3>
-                    <p className={`text-sm ${
-                      activeUseCase === index ? 'text-gray-300' : 'text-gray-600'
+                    <h3 className={`heading-5 mb-1 font-heading tracking-tight ${activeUseCase === index ? 'text-black' : 'text-foreground'}`}>{useCase.title}</h3>
+                    <p className={`text-sm leading-relaxed font-body ${
+                      activeUseCase === index ? 'text-neutral-600' : 'text-muted'
                     }`}>
                       {useCase.description}
                     </p>
@@ -115,14 +114,12 @@ export default function UseCasesSection() {
             >
               <div className="text-4xl mb-6">{useCases[activeUseCase].icon}</div>
               
-              <h3 className="heading-4 mb-4">{useCases[activeUseCase].title}</h3>
+              <h3 className="heading-4 mb-4 font-heading tracking-tight">{useCases[activeUseCase].title}</h3>
               
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                {useCases[activeUseCase].scenario}
-              </p>
+              <p className="text-muted mb-6 leading-relaxed font-body">{useCases[activeUseCase].scenario}</p>
 
               <div className="mb-8">
-                <h4 className="font-semibold mb-4 text-gray-900">Key Benefits:</h4>
+                <h4 className="font-semibold mb-4 text-foreground font-heading tracking-tight">Key Benefits:</h4>
                 <ul className="space-y-3">
                   {useCases[activeUseCase].benefits.map((benefit, index) => (
                     <motion.li
@@ -132,8 +129,8 @@ export default function UseCasesSection() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
                     >
-                      <div className="w-2 h-2 bg-black rounded-full mt-2 flex-shrink-0"></div>
-                      <span className="text-gray-700">{benefit}</span>
+                      <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0 shadow shadow-black/50"></div>
+                      <span className="text-muted">{benefit}</span>
                     </motion.li>
                   ))}
                 </ul>
@@ -141,9 +138,9 @@ export default function UseCasesSection() {
 
               <motion.a
                 href="#demo"
-                className="btn btn-primary"
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
+                className="btn btn-primary btn-lg"
+                whileHover={{ y: -3 }}
+                whileTap={{ scale: 0.97 }}
               >
                 See This in Action
               </motion.a>

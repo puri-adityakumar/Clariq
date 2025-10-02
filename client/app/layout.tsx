@@ -47,8 +47,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${karla.variable} ${inconsolata.variable} ${unicaOne.variable} antialiased`}>
+    <html lang="en" className="dark scroll-smooth">
+      <body className={`${karla.variable} ${inconsolata.variable} ${unicaOne.variable} antialiased font-body bg-background text-foreground relative noise-bg`}>        
         {children}
       </body>
     </html>

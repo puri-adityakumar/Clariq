@@ -4,11 +4,10 @@ import { motion } from 'framer-motion';
 
 export default function CallToAction() {
   return (
-    <section id="demo" className="section bg-black text-white relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-white rounded-full filter blur-3xl"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-white rounded-full filter blur-3xl"></div>
+    <section id="demo" className="section relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[60rem] h-[60rem] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.07),transparent_60%)]" />
+        <div className="absolute bottom-0 left-0 w-[40rem] h-[40rem] bg-[radial-gradient(circle_at_30%_70%,rgba(255,255,255,0.05),transparent_70%)]" />
       </div>
 
       <div className="container relative z-10">
@@ -20,7 +19,7 @@ export default function CallToAction() {
           viewport={{ once: true, margin: "-100px" }}
         >
           <motion.h2 
-            className="heading-2 mb-6"
+            className="heading-2 mb-6 font-heading"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -30,7 +29,7 @@ export default function CallToAction() {
           </motion.h2>
           
           <motion.p 
-            className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto"
+            className="text-lg md:text-xl text-muted mb-10 max-w-2xl mx-auto leading-relaxed font-body"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -49,18 +48,18 @@ export default function CallToAction() {
           >
             <motion.a
               href="mailto:demo@clariq.ai"
-              className="btn btn-lg bg-white text-black hover:bg-gray-100"
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.98 }}
+              className="btn btn-primary btn-lg w-full sm:w-auto"
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.97 }}
             >
               Request Demo
             </motion.a>
             
             <motion.a
               href="mailto:info@clariq.ai"
-              className="btn btn-lg border-2 border-white text-white hover:bg-white hover:text-black"
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.98 }}
+              className="btn btn-secondary btn-lg w-full sm:w-auto"
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.97 }}
             >
               Contact Sales
             </motion.a>
@@ -75,16 +74,16 @@ export default function CallToAction() {
             viewport={{ once: true }}
           >
             <div>
-              <div className="text-3xl font-bold text-white mb-2">24/7</div>
-              <div className="text-gray-400">AI-Powered Research</div>
+              <div className="text-3xl font-bold text-foreground mb-2">24/7</div>
+              <div className="text-muted">AI-Powered Research</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-white mb-2">10x</div>
-              <div className="text-gray-400">Faster Preparation</div>
+              <div className="text-3xl font-bold text-foreground mb-2">10x</div>
+              <div className="text-muted">Faster Preparation</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-white mb-2">95%</div>
-              <div className="text-gray-400">Accuracy Rate</div>
+              <div className="text-3xl font-bold text-foreground mb-2">95%</div>
+              <div className="text-muted">Accuracy Rate</div>
             </div>
           </motion.div>
 
@@ -96,25 +95,25 @@ export default function CallToAction() {
             transition={{ duration: 0.6, delay: 0.5 }}
             viewport={{ once: true }}
           >
-            <p className="text-gray-400 mb-4">Prefer to reach out directly?</p>
+            <p className="text-muted mb-4">Prefer to reach out directly?</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center text-sm">
               <a 
                 href="mailto:hello@clariq.ai" 
-                className="text-gray-300 hover:text-white transition-colors"
+                className="text-muted hover:text-foreground transition-colors"
               >
                 hello@clariq.ai
               </a>
-              <div className="hidden sm:block text-gray-600">•</div>
+              <div className="hidden sm:block text-muted/40">•</div>
               <a 
                 href="#documentation" 
-                className="text-gray-300 hover:text-white transition-colors"
+                className="text-muted hover:text-foreground transition-colors"
               >
                 View Documentation
               </a>
-              <div className="hidden sm:block text-gray-600">•</div>
+              <div className="hidden sm:block text-muted/40">•</div>
               <a 
                 href="#support" 
-                className="text-gray-300 hover:text-white transition-colors"
+                className="text-muted hover:text-foreground transition-colors"
               >
                 Get Support
               </a>

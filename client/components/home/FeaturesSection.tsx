@@ -34,7 +34,7 @@ export default function FeaturesSection() {
   const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
 
   return (
-    <section id="features" className="section bg-gray-50">
+    <section id="features" className="section">
       <div className="container">
         <motion.div 
           className="text-center mb-16"
@@ -43,10 +43,9 @@ export default function FeaturesSection() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true, margin: "-100px" }}
         >
-          <h2 className="heading-2 mb-4">Powerful Features</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            CLARIQ combines cutting-edge AI technology with practical sales intelligence 
-            to revolutionize how teams prepare for and execute sales conversations.
+          <h2 className="heading-2 mb-5 font-heading">Powerful Features</h2>
+          <p className="text-lg md:text-xl text-muted max-w-2xl mx-auto font-body leading-relaxed">
+            Focused, modular capabilities engineered to compress research time, sharpen messaging and scale intelligent execution.
           </p>
         </motion.div>
 
@@ -54,7 +53,7 @@ export default function FeaturesSection() {
           {features.map((feature, index) => (
             <motion.div
               key={index}
-              className="card"
+              className="card group"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -67,9 +66,9 @@ export default function FeaturesSection() {
                 transition: { duration: 0.3 }
               }}
             >
-              <div className="text-4xl mb-4">{feature.icon}</div>
-              <h3 className="heading-5 mb-3">{feature.title}</h3>
-              <p className="text-gray-600 mb-4">{feature.description}</p>
+              <div className="text-4xl mb-5 drop-shadow-sm select-none">{feature.icon}</div>
+              <h3 className="heading-5 mb-3 font-heading tracking-tight text-foreground">{feature.title}</h3>
+              <p className="text-muted mb-4 font-body leading-relaxed">{feature.description}</p>
               
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
@@ -80,8 +79,8 @@ export default function FeaturesSection() {
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden"
               >
-                <div className="pt-4 border-t border-gray-200">
-                  <p className="text-sm text-gray-500">{feature.details}</p>
+                <div className="pt-4 border-t border-white/10">
+                  <p className="text-sm text-muted leading-relaxed">{feature.details}</p>
                 </div>
               </motion.div>
             </motion.div>
@@ -97,9 +96,9 @@ export default function FeaturesSection() {
         >
           <motion.a
             href="#use-cases"
-            className="btn btn-primary"
-            whileHover={{ scale: 1.02, y: -2 }}
-            whileTap={{ scale: 0.98 }}
+            className="btn btn-secondary btn-lg"
+            whileHover={{ y: -3 }}
+            whileTap={{ scale: 0.97 }}
           >
             Explore Use Cases
           </motion.a>
