@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "../components/layout/Header";
 import BackgroundFX from "../components/layout/BackgroundFX";
 import { fontClasses } from "../lib/fonts";
+import { AuthProvider } from "../appwrite/AuthProvider";
 
 export const metadata: Metadata = {
   title: "CLARIQ - AI-Powered Sales Intelligence",
@@ -30,9 +31,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark scroll-smooth ${fontClasses}`}>
       <body className="antialiased font-body bg-background text-foreground relative noise-bg">
-        <BackgroundFX />
-        <Header />
-        {children}
+        <AuthProvider>
+          <BackgroundFX />
+          <Header />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

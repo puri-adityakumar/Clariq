@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import UserAvatar from "./UserAvatar";
+import { useAuth } from "../../appwrite/AuthProvider";
+import { usePathname } from "next/navigation";
 
 // Only keep links that currently exist on the landing page. Removed non-functional placeholders.
 const navLinks = [
@@ -14,6 +17,9 @@ const navLinks = [
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { user, loading } = useAuth();
+  const pathname = usePathname();
+  const isDashboard = pathname.startsWith('/dashboard');
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -31,7 +37,7 @@ export default function Header() {
         <div className="mx-auto max-w-7xl px-6 flex h-16 items-center">
           {/* Left: Brand */}
           <div className="flex flex-1">
-            <Link href="#" className="font-brand text-[1.55rem] tracking-[0.04em] font-normal relative select-none">
+            <Link href="/" className="font-brand text-[1.55rem] tracking-[0.04em] font-normal relative select-none">
               <span className="relative inline-block">
                 clariq
                 <span className="absolute -inset-1 rounded-md bg-white/0" />
@@ -39,22 +45,27 @@ export default function Header() {
             </Link>
           </div>
           {/* Center: Nav */}
-          <nav className="hidden md:flex items-center gap-10 text-sm flex-1 justify-center">
-            {navLinks.map(l => (
-              <a
-                key={l.href}
-                href={l.href}
-                className="text-muted hover:text-foreground transition-colors font-medium tracking-tight"
-              >
-                {l.label}
-              </a>
-            ))}
-          </nav>
+          {!isDashboard && (
+            <nav className="hidden md:flex items-center gap-10 text-sm flex-1 justify-center">
+              {navLinks.map(l => (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  className="text-muted hover:text-foreground transition-colors font-medium tracking-tight"
+                >
+                  {l.label}
+                </a>
+              ))}
+            </nav>
+          )}
           {/* Right: Auth / CTA */}
             <div className="flex flex-1 justify-end items-center gap-3">
-              <Button asChild size="sm" className="hidden md:inline-flex">
-                <Link href="/signin">Sign In</Link>
-              </Button>
+              {!loading && !user && (
+                <Button asChild size="sm" className="hidden md:inline-flex">
+                  <Link href="/signin">Sign In</Link>
+                </Button>
+              )}
+              {!loading && user && <UserAvatar />}
               {/* Mobile menu button */}
               <button
                 onClick={() => setOpen(o => !o)}
@@ -70,7 +81,7 @@ export default function Header() {
             </div>
         </div>
         <AnimatePresence>
-          {open && (
+          {open && !isDashboard && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
@@ -89,14 +100,21 @@ export default function Header() {
                     {l.label}
                   </a>
                 ))}
-                <Button
-                  asChild
-                  size="lg"
-                  className="mt-2"
-                  onClick={() => setOpen(false)}
-                >
-                  <Link href="/signin">Sign In</Link>
-                </Button>
+                {!loading && !user && (
+                  <Button
+                    asChild
+                    size="lg"
+                    className="mt-2"
+                    onClick={() => setOpen(false)}
+                  >
+                    <Link href="/signin">Sign In</Link>
+                  </Button>
+                )}
+                {!loading && user && (
+                  <div className="mt-2">
+                    <Link href="/dashboard" onClick={()=>setOpen(false)} className="block text-sm px-2 py-2 rounded bg-white/10 text-center">Dashboard</Link>
+                  </div>
+                )}
               </div>
             </motion.div>
           )}

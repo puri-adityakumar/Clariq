@@ -19,7 +19,7 @@ export default function Footer() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <div className="font-brand text-3xl font-bold mb-4 tracking-wide">CLARIQ</div>
+              <div className="font-brand text-3xl mb-4 tracking-wide">clariq</div>
               <p className="text-muted text-sm leading-relaxed">
                 AI-powered sales intelligence that compresses preparation time and amplifies deal execution with precision.
               </p>
