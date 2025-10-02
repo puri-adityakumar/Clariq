@@ -1,29 +1,8 @@
 import type { Metadata } from "next";
-import { Karla, Inconsolata, Unica_One } from "next/font/google";
 import "./globals.css";
 import Header from "../components/layout/Header";
 import BackgroundFX from "../components/layout/BackgroundFX";
-
-const karla = Karla({
-  subsets: ["latin"],
-  variable: "--font-karla",
-  weight: ["400", "600", "700"],
-  display: "swap",
-});
-
-const inconsolata = Inconsolata({
-  subsets: ["latin"],
-  variable: "--font-inconsolata",
-  weight: ["400", "500", "600"],
-  display: "swap",
-});
-
-const unicaOne = Unica_One({
-  subsets: ["latin"],
-  variable: "--font-unica-one",
-  weight: ["400"],
-  display: "swap",
-});
+import { fontClasses } from "../lib/fonts";
 
 export const metadata: Metadata = {
   title: "CLARIQ - AI-Powered Sales Intelligence",
@@ -49,10 +28,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark scroll-smooth">
-      <body className={`${karla.variable} ${inconsolata.variable} ${unicaOne.variable} antialiased font-body bg-background text-foreground relative noise-bg`}>      
-  <BackgroundFX />
-  <Header />
+    <html lang="en" className={`dark scroll-smooth ${fontClasses}`}>
+      <body className="antialiased font-body bg-background text-foreground relative noise-bg">
+        <BackgroundFX />
+        <Header />
         {children}
       </body>
     </html>
