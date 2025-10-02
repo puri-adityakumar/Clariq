@@ -1,34 +1,35 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { InboxIcon, Brain, Sparkles, Rocket } from 'lucide-react';
 
 const steps = [
   {
     number: '01',
     title: 'Input & Discovery',
     description: 'Provide prospect information and sales objectives. CLARIQ begins comprehensive data collection and analysis.',
-    icon: '📝',
+    icon: InboxIcon,
     details: 'Our system ingests prospect data, company information, and your specific sales goals to begin the intelligence gathering process.'
   },
   {
     number: '02',
     title: 'AI Research Engine',
     description: 'Advanced AI algorithms conduct deep research across multiple data sources to build comprehensive prospect profiles.',
-    icon: '🧠',
+    icon: Brain,
     details: 'Machine learning models analyze public data, social signals, company information, and industry trends to create detailed insights.'
   },
   {
     number: '03',
     title: 'Intelligent Analysis',
     description: 'Generate actionable insights, identify pain points, and create personalized conversation strategies.',
-    icon: '⚡',
+    icon: Sparkles,
     details: 'Our analysis engine identifies key opportunities, potential objections, and creates tailored messaging for maximum impact.'
   },
   {
     number: '04',
     title: 'Delivery & Execution',
     description: 'Receive detailed reports and conversation guides, ready for human reps or AI voice agent integration.',
-    icon: '🚀',
+    icon: Rocket,
     details: 'Get comprehensive briefings, conversation scripts, and strategic recommendations delivered in your preferred format.'
   }
 ];
@@ -77,7 +78,9 @@ export default function HowItWorks() {
                     }}
                   >
                     <div className="flex items-center gap-4 mb-5">
-                      <div className="text-4xl select-none">{step.icon}</div>
+                      <div className="w-12 h-12 rounded-xl bg-white/5 ring-1 ring-white/10 flex items-center justify-center">
+                        <step.icon className="w-6 h-6 text-white" strokeWidth={1.5} />
+                      </div>
                       <div className="text-2xl font-bold text-muted">{step.number}</div>
                     </div>
                     

@@ -1,13 +1,14 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { Bot, UserRound, Target, Microscope } from 'lucide-react';
 import { useState } from 'react';
 
 const useCases = [
   {
     title: 'AI Voice Agents',
     description: 'Autonomous sales conversations powered by research',
-    icon: '🤖',
+    icon: Bot,
     benefits: [
       '24/7 sales availability',
       'Consistent messaging and positioning',
@@ -19,7 +20,7 @@ const useCases = [
   {
     title: 'Human Sales Rep Support',
     description: 'Pre-call intelligence and meeting preparation',
-    icon: '👨‍💼',
+    icon: UserRound,
     benefits: [
       'Detailed prospect background research',
       'Pain point identification and validation',
@@ -31,7 +32,7 @@ const useCases = [
   {
     title: 'Lead Qualification',
     description: 'Automated prospect scoring and insights',
-    icon: '🎯',
+    icon: Target,
     benefits: [
       'Intelligent lead scoring and prioritization',
       'Automated qualification workflows',
@@ -43,7 +44,7 @@ const useCases = [
   {
     title: 'Account Research',
     description: 'Deep-dive analysis for key accounts',
-    icon: '🔬',
+    icon: Microscope,
     benefits: [
       'Comprehensive company analysis',
       'Competitive landscape mapping',
@@ -89,7 +90,9 @@ export default function UseCasesSection() {
                 whileTap={{ scale: 0.97 }}
               >
                 <div className="flex items-center gap-4">
-                  <div className="text-3xl">{useCase.icon}</div>
+                  <div className="w-11 h-11 rounded-lg flex items-center justify-center bg-white/5 ring-1 ring-white/10">
+                    <useCase.icon className="w-5 h-5 text-white" strokeWidth={1.5} />
+                  </div>
                   <div>
                     <h3 className={`heading-5 mb-1 font-heading tracking-tight ${activeUseCase === index ? 'text-black' : 'text-foreground'}`}>{useCase.title}</h3>
                     <p className={`text-sm leading-relaxed font-body ${
@@ -112,7 +115,14 @@ export default function UseCasesSection() {
               transition={{ duration: 0.4 }}
               className="card"
             >
-              <div className="text-4xl mb-6">{useCases[activeUseCase].icon}</div>
+              {(() => {
+                const ActiveIcon = useCases[activeUseCase].icon as React.ComponentType<{ className?: string; strokeWidth?: number }>;
+                return (
+                  <div className="mb-6 w-14 h-14 rounded-2xl bg-white/5 ring-1 ring-white/10 flex items-center justify-center">
+                    <ActiveIcon className="w-7 h-7 text-white" strokeWidth={1.5} />
+                  </div>
+                );
+              })()}
               
               <h3 className="heading-4 mb-4 font-heading tracking-tight">{useCases[activeUseCase].title}</h3>
               

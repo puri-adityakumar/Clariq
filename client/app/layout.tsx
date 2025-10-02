@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Karla, Inconsolata, Unica_One } from "next/font/google";
 import "./globals.css";
+import Header from "../components/layout/Header";
+import BackgroundFX from "../components/layout/BackgroundFX";
 
 const karla = Karla({
   subsets: ["latin"],
@@ -48,7 +50,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark scroll-smooth">
-      <body className={`${karla.variable} ${inconsolata.variable} ${unicaOne.variable} antialiased font-body bg-background text-foreground relative noise-bg`}>        
+      <body className={`${karla.variable} ${inconsolata.variable} ${unicaOne.variable} antialiased font-body bg-background text-foreground relative noise-bg`}>      
+  <BackgroundFX />
+  <Header />
         {children}
       </body>
     </html>

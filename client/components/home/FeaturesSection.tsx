@@ -1,29 +1,30 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { Search, FileText, Mic, Users } from 'lucide-react';
 import { useState } from 'react';
 
 const features = [
   {
-    icon: '🔍',
+    icon: Search,
     title: 'Deep Research Engine',
     description: 'Conducts comprehensive research on products and specific prospects using advanced AI algorithms.',
     details: 'Our AI-powered research engine analyzes thousands of data points to provide you with actionable insights about your prospects and their businesses.'
   },
   {
-    icon: '📊',
+    icon: FileText,
     title: 'Intelligent Report Generation',
     description: 'Produces detailed, actionable research reports that empower sales teams with critical insights.',
     details: 'Generate comprehensive reports that include prospect analysis, pain point identification, and tailored talking points for your sales conversations.'
   },
   {
-    icon: '🎤',
+    icon: Mic,
     title: 'Voice Agent Integration',
     description: 'Creates customized conversation documents that power AI voice agents for autonomous sales.',
     details: 'Seamlessly integrate with AI voice platforms to enable autonomous sales conversations powered by deep research and intelligent scripting.'
   },
   {
-    icon: '👥',
+    icon: Users,
     title: 'Human Sales Enablement',
     description: 'Generates pre-meeting reports that provide human sales representatives with strategic advantages.',
     details: 'Equip your human sales team with detailed pre-call intelligence, conversation starters, and strategic recommendations for every meeting.'
@@ -66,7 +67,9 @@ export default function FeaturesSection() {
                 transition: { duration: 0.3 }
               }}
             >
-              <div className="text-4xl mb-5 drop-shadow-sm select-none">{feature.icon}</div>
+              <div className="mb-5 drop-shadow-sm select-none w-12 h-12 rounded-xl flex items-center justify-center bg-white/5 ring-1 ring-white/10">
+                <feature.icon className="w-6 h-6 text-white" strokeWidth={1.5} />
+              </div>
               <h3 className="heading-5 mb-3 font-heading tracking-tight text-foreground">{feature.title}</h3>
               <p className="text-muted mb-4 font-body leading-relaxed">{feature.description}</p>
               
