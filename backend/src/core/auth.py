@@ -36,7 +36,11 @@ async def verify_appwrite_session(session_token: str) -> Optional[AppwriteUser]:
         settings = get_settings()
         
         if not settings.appwrite_project_id:
-            logger.error("Appwrite project ID not configured")
+            logger.error("Appwrite project ID not configured. Set CLARIQ_APPWRITE_PROJECT_ID in .env")
+            return None
+        
+        if not session_token or session_token.strip() == "":
+            logger.warning("Empty session token provided")
             return None
         
         # Connect to Appwrite with user's session

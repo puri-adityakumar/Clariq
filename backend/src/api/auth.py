@@ -12,15 +12,7 @@ settings = get_settings()
 def get_current_user(request: Request) -> AppwriteUser:
     """
     Dependency to extract authenticated user from request state.
-    Only works for user-authenticated requests (not API key).
     """
-    # Check if request was authenticated via user session
-    if not hasattr(request.state, 'auth_type') or request.state.auth_type != 'user_session':
-        raise HTTPException(
-            status_code=403, 
-            detail="This endpoint requires user authentication, not API key"
-        )
-    
     if not hasattr(request.state, 'user'):
         raise HTTPException(
             status_code=401, 

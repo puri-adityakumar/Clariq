@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from datetime import datetime
 import sys
 from pathlib import Path
@@ -12,7 +13,7 @@ if str(src_path) not in sys.path:
 # Middleware imports
 from middleware.cors import add_cors_middleware
 from middleware.security import SecurityHeadersMiddleware
-from middleware.auth import APIKeyMiddleware
+from middleware.auth import UserSessionMiddleware
 from core.config import get_settings
 
 # API router imports
@@ -33,6 +34,42 @@ def create_app() -> FastAPI:
         openapi_url="/openapi.json",
     )
     
+    # Add exception handlers
+    @app.exception_handler(HTTPException)
+    async def http_exception_handler(request: Request, exc: HTTPException):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={
+                "error": {
+                    "code": exc.status_code,
+                    "message": exc.detail,
+                },
+                "meta": {
+                    "timestamp": datetime.utcnow().isoformat() + "Z",
+                    "service": settings.service_name,
+                    "version": settings.service_version,
+                }
+            }
+        )
+    
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+        return JSONResponse(
+            status_code=422,
+            content={
+                "error": {
+                    "code": 422,
+                    "message": "Validation error",
+                    "details": exc.errors()
+                },
+                "meta": {
+                    "timestamp": datetime.utcnow().isoformat() + "Z",
+                    "service": settings.service_name,
+                    "version": settings.service_version,
+                }
+            }
+        )
+    
     # Add middleware in execution order (first added = last executed)
     # 1. CORS - Handle preflight requests first
     add_cors_middleware(app)
@@ -40,8 +77,8 @@ def create_app() -> FastAPI:
     # 2. Security Headers - Add security headers to all responses
     app.add_middleware(SecurityHeadersMiddleware)
     
-    # 3. Authentication - Validate API keys/sessions
-    app.add_middleware(APIKeyMiddleware)
+    # 3. Authentication - Validate user sessions only
+    app.add_middleware(UserSessionMiddleware)
     
     # Register API routes
     app.include_router(auth_router)
@@ -67,7 +104,7 @@ def get_health():
             "middleware": {
                 "cors": True,
                 "security_headers": True,
-                "auth": True,
+                "user_session_auth": True,
             },
         }
     )

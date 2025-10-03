@@ -7,8 +7,7 @@ class Settings(BaseSettings):
     """
     Application settings loaded from environment variables.
     """
-    # API Configuration
-    api_keys: List[str] = ["dev-key-123", "admin-key-456"]  # Keep for internal services
+    # Environment Configuration
     environment: str = "development"
     
     # Service Configuration

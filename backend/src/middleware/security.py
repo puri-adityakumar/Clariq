@@ -13,14 +13,27 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         # Prevent MIME type sniffing
         response.headers["X-Content-Type-Options"] = "nosniff"
         
-        # Prevent clickjacking
-        response.headers["X-Frame-Options"] = "DENY"
+        # Prevent clickjacking (allow same origin for docs)
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
         
         # XSS protection (legacy but still useful)
         response.headers["X-XSS-Protection"] = "1; mode=block"
         
-        # Basic Content Security Policy
-        response.headers["Content-Security-Policy"] = "default-src 'self'"
+        # Content Security Policy - Allow docs to function
+        # For docs pages, we need to allow inline scripts and CDN resources
+        path = request.url.path
+        if path.startswith("/docs") or path.startswith("/redoc") or path == "/openapi.json":
+            # Relaxed CSP for documentation pages
+            response.headers["Content-Security-Policy"] = (
+                "default-src 'self'; "
+                "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; "
+                "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; "
+                "img-src 'self' data: https:; "
+                "font-src 'self' data: https://cdn.jsdelivr.net https://unpkg.com;"
+            )
+        else:
+            # Strict CSP for API endpoints
+            response.headers["Content-Security-Policy"] = "default-src 'self'"
         
         # Referrer policy
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
