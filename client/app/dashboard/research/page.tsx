@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ResearchModal } from "../../../components/research/ResearchModal";
 import { Button } from "../../../components/ui/button";
 import StatusBadge, { ResearchStatus } from "../../../components/research/StatusBadge";
@@ -27,6 +28,7 @@ const statusOrder: Record<ResearchStatus, number> = {
 export default function ResearchDashboardPage() {
   // Auth context reserved for future permission checks (user-specific queries in Phase 3)
   useAuth();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [jobs, setJobs] = useState<MockResearchJob[]>(mockData);
   const [filter, setFilter] = useState<string>("all");
@@ -105,7 +107,7 @@ export default function ResearchDashboardPage() {
                   <td className="px-4 py-3 text-white/60 text-[11px]">{job.agents.map(a => a.replace(/_/g,' ')).join(', ')}</td>
                   <td className="px-4 py-3">
                     {job.status === "completed" ? (
-                      <Button size="sm" variant="secondary">View Report</Button>
+                      <Button size="sm" variant="secondary" onClick={() => router.push(`/dashboard/research/${job.id}`)}>View Report</Button>
                     ) : job.status === "failed" ? (
                       <Button size="sm" variant="secondary">Retry</Button>
                     ) : (
