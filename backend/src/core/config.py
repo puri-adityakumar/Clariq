@@ -1,6 +1,6 @@
 from functools import lru_cache
 from pydantic_settings import BaseSettings
-from typing import List
+from typing import List, Optional
 
 
 class Settings(BaseSettings):
@@ -8,22 +8,30 @@ class Settings(BaseSettings):
     Application settings loaded from environment variables.
     """
     # API Configuration
-    api_keys: List[str] = ["dev-key-123", "admin-key-456"]  # Static for Phase 1
+    api_keys: List[str] = ["dev-key-123", "admin-key-456"]  # Keep for internal services
     environment: str = "development"
     
     # Service Configuration
     service_name: str = "clariq-backend"
     service_version: str = "0.1.0"
     
+    # Appwrite Configuration - REQUIRED for user authentication
+    appwrite_endpoint: str = "https://cloud.appwrite.io/v1"
+    appwrite_project_id: str = ""  # Must be set via CLARIQ_APPWRITE_PROJECT_ID
+    
+    # External API Keys (for research features)
+    cerebras_api_key: Optional[str] = None
+    exa_api_key: Optional[str] = None
+    
     # Future: Database, Redis, External APIs
     # database_url: str = ""
     # redis_url: str = ""
-    # appwrite_endpoint: str = ""
-    # appwrite_project_id: str = ""
     
     class Config:
         env_file = ".env"
         env_prefix = "CLARIQ_"
+        # Allow extra fields to prevent validation errors
+        extra = "ignore"
 
 
 @lru_cache()

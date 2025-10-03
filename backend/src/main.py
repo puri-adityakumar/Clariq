@@ -1,12 +1,22 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from datetime import datetime
+import sys
+from pathlib import Path
+
+# Add src directory to Python path
+src_path = Path(__file__).parent
+if str(src_path) not in sys.path:
+    sys.path.insert(0, str(src_path))
 
 # Middleware imports
 from middleware.cors import add_cors_middleware
 from middleware.security import SecurityHeadersMiddleware
 from middleware.auth import APIKeyMiddleware
 from core.config import get_settings
+
+# API router imports
+from api.auth import router as auth_router
 
 settings = get_settings()
 
@@ -32,6 +42,9 @@ def create_app() -> FastAPI:
     
     # 3. Authentication - Validate API keys/sessions
     app.add_middleware(APIKeyMiddleware)
+    
+    # Register API routes
+    app.include_router(auth_router)
     
     return app
 

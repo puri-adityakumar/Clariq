@@ -2,3 +2,4 @@ fastapi
 uvicorn[standard]
 pydantic-settings
 python-multipart
+appwrite
