@@ -5,6 +5,7 @@ import { cn } from "../../lib/utils";
 import { useAuth } from "../../appwrite/AuthProvider";
 import { createResearchJob } from "../../lib/appwrite/research";
 import { useRouter } from "next/navigation";
+import { useToast } from "../../lib/useToast";
 
 interface ResearchModalProps {
   open: boolean;
@@ -57,6 +58,7 @@ export const ResearchModal: React.FC<ResearchModalProps> = ({ open, onClose, onS
   
   const { user } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
 
   // Close on escape
   useEffect(() => {
@@ -113,7 +115,7 @@ export const ResearchModal: React.FC<ResearchModalProps> = ({ open, onClose, onS
     
     // Check if user is authenticated
     if (!user) {
-      alert("Please sign in to start research");
+      toast.error("Please sign in to start research");
       return;
     }
     
@@ -146,15 +148,15 @@ export const ResearchModal: React.FC<ResearchModalProps> = ({ open, onClose, onS
       // Call the old onSubmit prop if provided (for backwards compatibility)
       await onSubmit?.(payload);
       
-      // Success notification (temporary alert until we add proper toast)
-      alert("Research initiated! Check back in 10-15 minutes.");
+      // Success notification
+      toast.success("Research initiated! Check back in 10-15 minutes.");
       
       // Navigate to research dashboard
       router.push("/dashboard/research");
       onClose();
     } catch (err) {
       console.error("Error creating research job:", err);
-      alert("Failed to create research job. Please try again.");
+      toast.error("Failed to create research job. Please try again.");
     } finally {
       setSubmitting(false);
     }

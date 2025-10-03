@@ -4,6 +4,7 @@ import Header from "../components/layout/Header";
 import BackgroundFX from "../components/layout/BackgroundFX";
 import { fontClasses } from "../lib/fonts";
 import { AuthProvider } from "../appwrite/AuthProvider";
+import { ToastContainer } from "../components/ui/ToastContainer";
 
 export const metadata: Metadata = {
   title: "CLARIQ - AI-Powered Sales Intelligence",
@@ -35,6 +36,7 @@ export default function RootLayout({
           <BackgroundFX />
           <Header />
           {children}
+          <ToastContainer />
         </AuthProvider>
       </body>
     </html>

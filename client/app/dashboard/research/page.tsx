@@ -6,6 +6,10 @@ import { Button } from "../../../components/ui/button";
 import StatusBadge, { ResearchStatus } from "../../../components/research/StatusBadge";
 import { useAuth } from "../../../appwrite/AuthProvider";
 import { useAutoRefreshJobs } from "../../../lib/appwrite/useResearch";
+import { ResearchDashboardSkeleton } from "../../../components/ui/Skeleton";
+import { retryResearchJob, deleteResearchJob } from "../../../lib/appwrite/research";
+import { useToast } from "../../../lib/useToast";
+import { IntegrationTestRunner } from "../../../components/testing/IntegrationTestRunner";
 import { cn } from "../../../lib/utils";
 
 const statusOrder: Record<ResearchStatus, number> = {
@@ -18,12 +22,60 @@ const statusOrder: Record<ResearchStatus, number> = {
 export default function ResearchDashboardPage() {
   const { user } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState<string>("all");
   const [sort, setSort] = useState<string>("newest");
+  const [retryingJobs, setRetryingJobs] = useState<Set<string>>(new Set());
+  const [deletingJobs, setDeletingJobs] = useState<Set<string>>(new Set());
 
   // Use the auto-refresh hook to fetch and update research jobs
   const { jobs, loading, error, refresh } = useAutoRefreshJobs(user?.$id || null, 30000);
+
+  const handleRetry = async (jobId: string) => {
+    if (!user) return;
+    
+    setRetryingJobs(prev => new Set(prev).add(jobId));
+    
+    try {
+      await retryResearchJob(jobId);
+      toast.success("Research job restarted successfully");
+      await refresh();
+    } catch (err) {
+      console.error("Error retrying job:", err);
+      toast.error("Failed to retry research job");
+    } finally {
+      setRetryingJobs(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(jobId);
+        return newSet;
+      });
+    }
+  };
+
+  const handleDelete = async (jobId: string, target: string) => {
+    if (!user) return;
+    
+    const confirmDelete = confirm(`Are you sure you want to delete the research job for "${target}"? This action cannot be undone.`);
+    if (!confirmDelete) return;
+    
+    setDeletingJobs(prev => new Set(prev).add(jobId));
+    
+    try {
+      await deleteResearchJob(jobId);
+      toast.success("Research job deleted successfully");
+      await refresh();
+    } catch (err) {
+      console.error("Error deleting job:", err);
+      toast.error("Failed to delete research job");
+    } finally {
+      setDeletingJobs(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(jobId);
+        return newSet;
+      });
+    }
+  };
 
   const filtered = jobs.filter(j => {
     if (filter === "all") return true;
@@ -41,9 +93,16 @@ export default function ResearchDashboardPage() {
   if (loading && jobs.length === 0) {
     return (
       <main className="min-h-[70vh] container max-w-6xl py-12">
-        <div className="flex items-center justify-center py-24">
-          <p className="text-white/60">Loading research jobs...</p>
+        <div className="mb-10 flex flex-col gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h1 className="font-heading text-2xl font-semibold tracking-tight text-white">Market Research</h1>
+              <p className="mt-1 text-sm text-white/60">Launch and monitor multi-agent market & people research jobs.</p>
+            </div>
+            <Button disabled size="lg" className="font-heading font-semibold tracking-tight">Start Market Research</Button>
+          </div>
         </div>
+        <ResearchDashboardSkeleton />
       </main>
     );
   }
@@ -115,13 +174,31 @@ export default function ResearchDashboardPage() {
                   <td className="px-4 py-3 text-white/60 text-xs">{new Date(job.created_at).toLocaleString()}</td>
                   <td className="px-4 py-3 text-white/60 text-[11px]">{job.enabled_agents.map((a: string) => a.replace(/_/g,' ')).join(', ')}</td>
                   <td className="px-4 py-3">
-                    {job.status === "completed" ? (
-                      <Button size="sm" variant="secondary" onClick={() => router.push(`/dashboard/research/${job.$id}`)}>View Report</Button>
-                    ) : job.status === "failed" ? (
-                      <Button size="sm" variant="secondary">Retry</Button>
-                    ) : (
-                      <span className="text-xs text-white/40">Processing…</span>
-                    )}
+                    <div className="flex gap-2">
+                      {job.status === "completed" ? (
+                        <Button size="sm" variant="secondary" onClick={() => router.push(`/dashboard/research/${job.$id}`)}>View Report</Button>
+                      ) : job.status === "failed" ? (
+                        <Button 
+                          size="sm" 
+                          variant="secondary" 
+                          onClick={() => handleRetry(job.$id)}
+                          disabled={retryingJobs.has(job.$id)}
+                        >
+                          {retryingJobs.has(job.$id) ? "Retrying..." : "Retry"}
+                        </Button>
+                      ) : (
+                        <span className="text-xs text-white/40">Processing…</span>
+                      )}
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={() => handleDelete(job.$id, job.target)}
+                        disabled={deletingJobs.has(job.$id)}
+                        className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                      >
+                        {deletingJobs.has(job.$id) ? "Deleting..." : "Delete"}
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -139,6 +216,13 @@ export default function ResearchDashboardPage() {
           await refresh();
         }}
       />
+
+      {/* Integration Test Runner (Development Only) */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="mt-8 border-t border-white/10 pt-8">
+          <IntegrationTestRunner />
+        </div>
+      )}
     </main>
   );
 }
