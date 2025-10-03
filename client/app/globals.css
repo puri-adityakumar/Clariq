@@ -305,6 +305,11 @@ p {
   color: #888888;
 }
 
+/* Input utility class for consistent form styling */
+.input {
+  @apply w-full px-4 py-2 bg-gray-800/70 border border-white/10 rounded-md text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/30 transition;
+}
+
 /* Updated blur background utility */
 .blur-bg {
   position: relative;
