@@ -43,11 +43,11 @@ async def verify_appwrite_session(session_token: str) -> Optional[AppwriteUser]:
             logger.warning("Empty session token provided")
             return None
         
-        # Connect to Appwrite with user's session
+        # Connect to Appwrite with user's JWT token
         client = Client()
         client.set_endpoint(settings.appwrite_endpoint)
         client.set_project(settings.appwrite_project_id)
-        client.set_session(session_token)  # Use user's session
+        client.set_jwt(session_token)  # Use JWT token for backend validation
         
         # Try to get user info - this validates the session
         account = Account(client)

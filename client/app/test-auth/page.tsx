@@ -55,7 +55,7 @@ export default function TestAuthPage() {
       {/* Test Buttons */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <button
-          onClick={() => runTest('backendConnection', apiClient.testConnection)}
+          onClick={() => runTest('backendConnection', () => apiClient.testConnection())}
           disabled={loading}
           className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-900 px-4 py-2 rounded font-medium transition-colors"
         >
@@ -63,26 +63,11 @@ export default function TestAuthPage() {
         </button>
 
         <button
-          onClick={() => runTest('apiKeyAuth', apiClient.testWithApiKey)}
-          disabled={loading}
-          className="bg-purple-600 hover:bg-purple-700 disabled:bg-purple-900 px-4 py-2 rounded font-medium transition-colors"
-        >
-          Test API Key Auth
-        </button>
-
-        <button
-          onClick={() => runTest('userAuth', apiClient.getCurrentUser)}
+          onClick={() => runTest('userAuth', () => apiClient.getCurrentUser())}
           disabled={loading || !user}
           className="bg-green-600 hover:bg-green-700 disabled:bg-green-900 px-4 py-2 rounded font-medium transition-colors"
         >
           Test User Session Auth
-        </button>
-
-        <button
-          disabled
-          className="bg-gray-600 px-4 py-2 rounded font-medium cursor-not-allowed"
-        >
-          Research Job (Coming Soon)
         </button>
       </div>
 
@@ -91,9 +76,8 @@ export default function TestAuthPage() {
         <h3 className="font-semibold mb-2 text-yellow-300">Testing Instructions:</h3>
         <ol className="list-decimal list-inside space-y-1 text-sm text-yellow-200">
           <li>First test "Backend Connection" (should work for everyone)</li>
-          <li>Test "API Key Auth" (uses static dev key)</li>
           <li>Sign in first at <a href="/signin" className="underline">/signin</a> if not already</li>
-          <li>Then test "User Session Auth" (validates your Appwrite session)</li>
+          <li>Then test "User Session Auth" (validates your Appwrite session and shows your email)</li>
         </ol>
       </div>
 
@@ -111,12 +95,42 @@ export default function TestAuthPage() {
               </span>
             </h3>
             <div className={`p-3 rounded text-sm ${
-              result.success ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'
+              result.success ? 'bg-green-500/10' : 'bg-red-500/20 text-red-300'
             }`}>
               {result.success ? (
-                <pre className="whitespace-pre-wrap overflow-auto text-xs">
-                  {JSON.stringify(result.data, null, 2)}
-                </pre>
+                testName === 'userAuth' && result.data?.data ? (
+                  <div className="space-y-3">
+                    <div className="bg-green-500/20 text-green-300 p-3 rounded">
+                      <p className="text-lg font-semibold">✅ Authentication Successful!</p>
+                    </div>
+                    <div className="space-y-2 text-white">
+                      <p className="text-lg"><strong>📧 Email:</strong> <span className="text-blue-300">{result.data.data.email}</span></p>
+                      <p><strong>👤 Name:</strong> {result.data.data.name || 'Not set'}</p>
+                      <p><strong>🆔 User ID:</strong> <span className="text-xs font-mono">{result.data.data.user_id}</span></p>
+                      <p><strong>✉️ Email Verified:</strong> 
+                        <span className={`ml-2 px-2 py-1 rounded text-xs ${
+                          result.data.data.email_verification ? 'bg-green-500/20 text-green-300' : 'bg-yellow-500/20 text-yellow-300'
+                        }`}>
+                          {result.data.data.email_verification ? 'Yes' : 'No'}
+                        </span>
+                      </p>
+                      <p><strong>📅 Joined:</strong> {new Date(result.data.data.created_at).toLocaleDateString()}</p>
+                      {result.data.data.labels && result.data.data.labels.length > 0 && (
+                        <p><strong>🏷️ Labels:</strong> {result.data.data.labels.join(', ')}</p>
+                      )}
+                    </div>
+                    <details className="mt-3">
+                      <summary className="cursor-pointer text-gray-400 hover:text-gray-300">View Raw Response</summary>
+                      <pre className="whitespace-pre-wrap overflow-auto text-xs mt-2 bg-black/20 p-2 rounded text-gray-400">
+                        {JSON.stringify(result.data, null, 2)}
+                      </pre>
+                    </details>
+                  </div>
+                ) : (
+                  <pre className="whitespace-pre-wrap overflow-auto text-xs text-gray-300">
+                    {JSON.stringify(result.data, null, 2)}
+                  </pre>
+                )
               ) : (
                 <p>Error: {result.error}</p>
               )}

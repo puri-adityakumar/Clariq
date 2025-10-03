@@ -25,11 +25,15 @@ def get_current_user(request: Request) -> AppwriteUser:
 @router.get("/me")
 async def get_current_user_info(user: AppwriteUser = Depends(get_current_user)):
     """
-    Test route to verify Appwrite session validation.
-    Returns current user information from validated Appwrite session.
+    Get current authenticated user information.
+    Returns user details from validated Appwrite session.
     
     This endpoint demonstrates that only authenticated users can access protected routes.
     """
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"User authenticated: {user.email} (ID: {user.id})")
+    
     return {
         "data": {
             "user_id": user.id,
@@ -44,7 +48,7 @@ async def get_current_user_info(user: AppwriteUser = Depends(get_current_user)):
             "service": settings.service_name,
             "version": settings.service_version,
         },
-        "message": "User authenticated successfully via Appwrite session"
+        "message": f"Authenticated as {user.email}"
     }
 
 
