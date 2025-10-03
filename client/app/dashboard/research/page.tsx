@@ -1,22 +1,12 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ResearchModal } from "../../../components/research/ResearchModal";
 import { Button } from "../../../components/ui/button";
 import StatusBadge, { ResearchStatus } from "../../../components/research/StatusBadge";
 import { useAuth } from "../../../appwrite/AuthProvider";
+import { useAutoRefreshJobs } from "../../../lib/appwrite/useResearch";
 import { cn } from "../../../lib/utils";
-
-interface MockResearchJob {
-  id: string;
-  target: string;
-  status: ResearchStatus;
-  created_at: string;
-  agents: string[];
-}
-
-// Placeholder until Appwrite integration (Phase 3)
-const mockData: MockResearchJob[] = [];
 
 const statusOrder: Record<ResearchStatus, number> = {
   pending: 1,
@@ -26,21 +16,14 @@ const statusOrder: Record<ResearchStatus, number> = {
 };
 
 export default function ResearchDashboardPage() {
-  // Auth context reserved for future permission checks (user-specific queries in Phase 3)
-  useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [jobs, setJobs] = useState<MockResearchJob[]>(mockData);
   const [filter, setFilter] = useState<string>("all");
   const [sort, setSort] = useState<string>("newest");
 
-  // Simulate polling placeholder (Phase 3 will replace)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      // no-op until real fetch
-    }, 30000);
-    return () => clearInterval(interval);
-  }, []);
+  // Use the auto-refresh hook to fetch and update research jobs
+  const { jobs, loading, error, refresh } = useAutoRefreshJobs(user?.$id || null, 30000);
 
   const filtered = jobs.filter(j => {
     if (filter === "all") return true;
@@ -50,9 +33,35 @@ export default function ResearchDashboardPage() {
   }).sort((a, b) => {
     if (sort === "newest") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     if (sort === "oldest") return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-    if (sort === "status") return statusOrder[a.status] - statusOrder[b.status];
+    if (sort === "status") return statusOrder[a.status as ResearchStatus] - statusOrder[b.status as ResearchStatus];
     return 0;
   });
+
+  // Show loading state
+  if (loading && jobs.length === 0) {
+    return (
+      <main className="min-h-[70vh] container max-w-6xl py-12">
+        <div className="flex items-center justify-center py-24">
+          <p className="text-white/60">Loading research jobs...</p>
+        </div>
+      </main>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <main className="min-h-[70vh] container max-w-6xl py-12">
+        <div className="flex flex-col items-center justify-center py-24 text-center">
+          <p className="text-red-400">Error loading research jobs</p>
+          <p className="text-white/60 text-sm mt-1">{error}</p>
+          <Button onClick={refresh} className="mt-4" variant="secondary">
+            Try Again
+          </Button>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-[70vh] container max-w-6xl py-12">
@@ -100,14 +109,14 @@ export default function ResearchDashboardPage() {
             </thead>
             <tbody>
               {filtered.map(job => (
-                <tr key={job.id} className="border-b border-white/5 last:border-0 hover:bg-white/5">
+                <tr key={job.$id} className="border-b border-white/5 last:border-0 hover:bg-white/5">
                   <td className="px-4 py-3 font-medium text-white/90">{job.target}</td>
-                  <td className="px-4 py-3"><StatusBadge status={job.status} /></td>
+                  <td className="px-4 py-3"><StatusBadge status={job.status as ResearchStatus} /></td>
                   <td className="px-4 py-3 text-white/60 text-xs">{new Date(job.created_at).toLocaleString()}</td>
-                  <td className="px-4 py-3 text-white/60 text-[11px]">{job.agents.map(a => a.replace(/_/g,' ')).join(', ')}</td>
+                  <td className="px-4 py-3 text-white/60 text-[11px]">{job.enabled_agents.map((a: string) => a.replace(/_/g,' ')).join(', ')}</td>
                   <td className="px-4 py-3">
                     {job.status === "completed" ? (
-                      <Button size="sm" variant="secondary" onClick={() => router.push(`/dashboard/research/${job.id}`)}>View Report</Button>
+                      <Button size="sm" variant="secondary" onClick={() => router.push(`/dashboard/research/${job.$id}`)}>View Report</Button>
                     ) : job.status === "failed" ? (
                       <Button size="sm" variant="secondary">Retry</Button>
                     ) : (
@@ -124,17 +133,10 @@ export default function ResearchDashboardPage() {
       <ResearchModal
         open={open}
         onClose={() => setOpen(false)}
-        onSubmit={async (payload) => {
-          // For now push mock row; Phase 3 will call Appwrite
-          const now = new Date().toISOString();
-          const newJob: MockResearchJob = {
-            id: Math.random().toString(36).slice(2),
-            target: payload.target,
-            status: "pending",
-            created_at: now,
-            agents: payload.enabledAgents
-          };
-          setJobs(j => [newJob, ...j]);
+        onSubmit={async () => {
+          // The modal now handles Appwrite integration internally
+          // Refresh the jobs list after successful submission
+          await refresh();
         }}
       />
     </main>

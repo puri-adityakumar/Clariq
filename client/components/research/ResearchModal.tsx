@@ -2,6 +2,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { cn } from "../../lib/utils";
+import { useAuth } from "../../appwrite/AuthProvider";
+import { createResearchJob } from "../../lib/appwrite/research";
+import { useRouter } from "next/navigation";
 
 interface ResearchModalProps {
   open: boolean;
@@ -51,6 +54,9 @@ export const ResearchModal: React.FC<ResearchModalProps> = ({ open, onClose, onS
   const [form, setForm] = useState<FormState>(initialState);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
+  
+  const { user } = useAuth();
+  const router = useRouter();
 
   // Close on escape
   useEffect(() => {
@@ -104,11 +110,19 @@ export const ResearchModal: React.FC<ResearchModalProps> = ({ open, onClose, onS
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
+    
+    // Check if user is authenticated
+    if (!user) {
+      alert("Please sign in to start research");
+      return;
+    }
+    
     setSubmitting(true);
     const enabledAgents = ["company_discovery"];
     if (form.personEnabled) enabledAgents.push("person_research");
     if (form.marketEnabled) enabledAgents.push("market_analysis");
     if (form.competitorEnabled) enabledAgents.push("competitor_research");
+    
     const payload: SubmitPayload = {
       target: form.target.trim(),
       enabledAgents,
@@ -117,13 +131,30 @@ export const ResearchModal: React.FC<ResearchModalProps> = ({ open, onClose, onS
       additionalContext: form.additionalContext.trim() || undefined,
       template: form.template
     };
+    
     try {
+      // Create research job in Appwrite
+      await createResearchJob({
+        userId: user.$id,
+        target: payload.target,
+        enabledAgents: payload.enabledAgents,
+        personName: payload.personName,
+        personLinkedin: payload.personLinkedin,
+        additionalContext: payload.additionalContext,
+      });
+
+      // Call the old onSubmit prop if provided (for backwards compatibility)
       await onSubmit?.(payload);
-      // Show toast placeholder: integrate actual toast system later
-      console.log("Research initiated", payload);
+      
+      // Success notification (temporary alert until we add proper toast)
+      alert("Research initiated! Check back in 10-15 minutes.");
+      
+      // Navigate to research dashboard
+      router.push("/dashboard/research");
       onClose();
     } catch (err) {
-      console.error(err);
+      console.error("Error creating research job:", err);
+      alert("Failed to create research job. Please try again.");
     } finally {
       setSubmitting(false);
     }
