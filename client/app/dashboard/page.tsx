@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { useAuth } from '../../appwrite/AuthProvider';
 import { account } from '../../appwrite/config';
-import { Pencil } from 'lucide-react';
+import { Pencil, ArrowRight, CheckCircle, Zap } from 'lucide-react';
 import { Button } from '../../components/ui/button';
-import Badge from '../../components/ui/badge';
+import Link from 'next/link';
 
 export default function DashboardPage() {
   const { user, refresh } = useAuth();
@@ -106,30 +106,102 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* Main CTA for Research Dashboard */}
+      <div className="mb-12">
+        <div className="card bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-blue-500/30">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Zap className="w-5 h-5 text-blue-400" />
+                <h2 className="heading-5 text-white">AI Market Research</h2>
+              </div>
+              <p className="text-white/80 text-sm max-w-md">
+                Create comprehensive market research reports using our multi-agent AI system. 
+                Analyze companies, research people, and gather competitive intelligence.
+              </p>
+            </div>
+            <Link href="/dashboard/research">
+              <Button size="lg" className="font-semibold tracking-tight whitespace-nowrap">
+                Start Research
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+
       <div className="grid gap-8 md:grid-cols-2">
         <div className="card">
-          <h2 className="heading-5 mb-3">Workspace Overview</h2>
-          <p className="text-muted text-sm leading-relaxed">
-            Add research jobs, track processing status and explore generated intelligence outputs. This area will evolve
-            into your primary operations console.
-          </p>
-        </div>
-        <div className="card">
-          <h2 className="heading-5 mb-3">Next Steps</h2>
-          <ul className="text-sm space-y-2 text-white/80">
+          <h2 className="heading-5 mb-4 flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-green-400" />
+            Features Ready
+          </h2>
+          <ul className="text-sm space-y-3 text-white/80">
             <li className="flex items-start gap-2">
-              <span className="mt-1 h-1.5 w-1.5 rounded-full bg-white/40" />
-              Create a research job module
+              <CheckCircle className="mt-0.5 h-4 w-4 text-green-400 flex-shrink-0" />
+              <span>Multi-agent research system with 4 specialized agents</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="mt-1 h-1.5 w-1.5 rounded-full bg-white/40" />
-              Implement async processing + status polling
+              <CheckCircle className="mt-0.5 h-4 w-4 text-green-400 flex-shrink-0" />
+              <span>Real-time job tracking and status updates</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="mt-1 h-1.5 w-1.5 rounded-full bg-white/40" />
-              Design agent output summaries
+              <CheckCircle className="mt-0.5 h-4 w-4 text-green-400 flex-shrink-0" />
+              <span>Professional markdown reports with download/copy</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle className="mt-0.5 h-4 w-4 text-green-400 flex-shrink-0" />
+              <span>User authentication and data security</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle className="mt-0.5 h-4 w-4 text-green-400 flex-shrink-0" />
+              <span>Toast notifications and error handling</span>
             </li>
           </ul>
+        </div>
+        
+        <div className="card">
+          <h2 className="heading-5 mb-4">Available Research Agents</h2>
+          <div className="space-y-3">
+            <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+              <h3 className="text-sm font-medium text-white mb-1">Company Discovery</h3>
+              <p className="text-xs text-white/60">Analyze company profiles, products, and business model</p>
+            </div>
+            <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+              <h3 className="text-sm font-medium text-white mb-1">Person Research</h3>
+              <p className="text-xs text-white/60">Research key people with LinkedIn and talking points</p>
+            </div>
+            <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+              <h3 className="text-sm font-medium text-white mb-1">Market Analysis</h3>
+              <p className="text-xs text-white/60">Market trends, size, and growth opportunities</p>
+            </div>
+            <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+              <h3 className="text-sm font-medium text-white mb-1">Competitor Research</h3>
+              <p className="text-xs text-white/60">Competitive landscape and positioning analysis</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Quick Links */}
+      <div className="mt-12 pt-8 border-t border-white/10">
+        <h3 className="text-sm font-medium text-white/80 mb-4">Quick Links</h3>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/dashboard/research">
+            <Button variant="secondary" size="sm">
+              Research Dashboard
+            </Button>
+          </Link>
+          <Link href="/dashboard/research" className="opacity-60 pointer-events-none">
+            <Button variant="secondary" size="sm" disabled>
+              Analytics (Coming Soon)
+            </Button>
+          </Link>
+          <Link href="/dashboard/research" className="opacity-60 pointer-events-none">
+            <Button variant="secondary" size="sm" disabled>
+              Templates (Coming Soon)
+            </Button>
+          </Link>
         </div>
       </div>
     </main>
