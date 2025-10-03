@@ -55,9 +55,9 @@ export default function DashboardPage() {
             <Pencil className="w-3.5 h-3.5" />
             <span>Edit</span>
           </Button>
-          <Badge variant={user?.emailVerification ? 'success' : 'warning'} size="sm">
+          {/* <Badge variant={user?.emailVerification ? 'success' : 'warning'} size="sm">
             {user?.emailVerification ? 'Email Verified' : 'Email Pending'}
-          </Badge>
+          </Badge> */}
         </div>
         <p className="text-muted max-w-2xl">
           Your personalized intelligence workspace. Build research flows, track jobs and manage agent outputs here.
