@@ -3,6 +3,7 @@ from appwrite.services.account import Account
 from appwrite.exception import AppwriteException
 from core.config import get_settings
 from typing import Optional
+from fastapi import HTTPException, Request
 import logging
 
 logger = logging.getLogger(__name__)
@@ -62,3 +63,25 @@ async def verify_appwrite_session(session_token: str) -> Optional[AppwriteUser]:
     except Exception as e:
         logger.error(f"Unexpected auth error: {e}")
         return None
+
+
+def get_current_user(request: Request) -> dict:
+    """
+    Dependency to extract authenticated user from request state.
+    Returns user data as dictionary for compatibility with existing code.
+    """
+    if not hasattr(request.state, 'user'):
+        raise HTTPException(
+            status_code=401, 
+            detail="User information not found in request"
+        )
+    
+    user: AppwriteUser = request.state.user
+    return {
+        "$id": user.id,
+        "email": user.email,
+        "name": user.name,
+        "emailVerification": user.email_verification,
+        "labels": user.labels,
+        "registration": user.registration
+    }

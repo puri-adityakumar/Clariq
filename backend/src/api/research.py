@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
 
-from core.auth import AppwriteUser
+from core.auth import AppwriteUser, get_current_user
 from core.config import get_settings
 from schemas.responses import SuccessResponse, ResponseMeta
 from workers.research_worker import execute_research_worker
@@ -14,19 +14,6 @@ import logging
 router = APIRouter(prefix="/v1/research", tags=["research"])
 settings = get_settings()
 logger = logging.getLogger(__name__)
-
-
-def get_current_user(request: Request) -> AppwriteUser:
-    """
-    Dependency to extract authenticated user from request state.
-    """
-    if not hasattr(request.state, 'user'):
-        raise HTTPException(
-            status_code=401, 
-            detail="User information not found in request"
-        )
-    
-    return request.state.user
 
 
 class ResearchExecuteResponse(BaseModel):
@@ -51,7 +38,7 @@ class ResearchStatusResponse(BaseModel):
 async def execute_research_job(
     job_id: str,
     background_tasks: BackgroundTasks,
-    user: AppwriteUser = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user)
 ):
     """
     Execute a research job by job ID.
@@ -77,10 +64,10 @@ async def execute_research_job(
         500: Internal server error during job setup
     """
     try:
-        logger.info(f"Research execution requested - Job ID: {job_id}, User: {user.email}")
+        logger.info(f"Research execution requested - Job ID: {job_id}, User: {current_user['email']}")
         
         # Step 0: Check rate limit
-        check_research_rate_limit(user.id, "execution")
+        check_research_rate_limit(current_user["$id"], "execution")
         
         # Import Appwrite service
         from services.appwrite_service import appwrite_service
@@ -90,7 +77,7 @@ async def execute_research_job(
         if not job:
             raise HTTPException(status_code=404, detail="Research job not found")
         
-        if job.get('user_id') != user.id:
+        if job.get('user_id') != current_user["$id"]:
             raise HTTPException(status_code=404, detail="Research job not found")
         
         # Step 2: Check job status is valid for execution
@@ -111,7 +98,7 @@ async def execute_research_job(
         estimated_completion = estimated_completion.replace(minute=estimated_completion.minute + 12)
         estimated_completion_str = estimated_completion.isoformat() + "Z"
         
-        logger.info(f"Research job {job_id} queued for execution by user {user.id}")
+        logger.info(f"Research job {job_id} queued for execution by user {current_user['$id']}")
         
         # Simulate the response for now
         response_data = ResearchExecuteResponse(
@@ -150,7 +137,7 @@ async def execute_research_job(
 @router.get("/status/{job_id}", response_model=SuccessResponse)
 async def get_research_status(
     job_id: str,
-    user: AppwriteUser = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user)
 ):
     """
     Get the current status of a research job.
@@ -170,10 +157,10 @@ async def get_research_status(
         500: Internal server error during status retrieval
     """
     try:
-        logger.info(f"Status check requested - Job ID: {job_id}, User: {user.email}")
+        logger.info(f"Status check requested - Job ID: {job_id}, User: {current_user['email']}")
         
         # Step 0: Check rate limit
-        check_research_rate_limit(user.id, "status")
+        check_research_rate_limit(current_user["$id"], "status")
         
         # Import Appwrite service
         from services.appwrite_service import appwrite_service
@@ -183,7 +170,7 @@ async def get_research_status(
         if not job:
             raise HTTPException(status_code=404, detail="Research job not found")
         
-        if job.get('user_id') != user.id:
+        if job.get('user_id') != current_user["$id"]:
             raise HTTPException(status_code=404, detail="Research job not found")
         
         # Build response data from actual job
