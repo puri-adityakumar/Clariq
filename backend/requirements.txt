@@ -1,5 +1,16 @@
+# Core FastAPI stack
 fastapi
 uvicorn[standard]
 pydantic-settings
 python-multipart
+
+# Database integration
 appwrite
+
+# Research AI Services (Phase 5)
+exa-py
+cerebras-cloud-sdk
+
+# Development and testing
+pytest
+pytest-asyncio

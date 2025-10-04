@@ -22,8 +22,17 @@ class Settings(BaseSettings):
     appwrite_research_collection_id: str = "research_jobs"
     
     # External API Keys (for research features)
-    cerebras_api_key: Optional[str] = None
-    exa_api_key: Optional[str] = None
+    cerebras_api_key: Optional[str] = None  # CLARIQ_CEREBRAS_API_KEY
+    exa_api_key: Optional[str] = None  # CLARIQ_EXA_API_KEY
+    
+    # Convenience properties for service access
+    @property
+    def CEREBRAS_API_KEY(self) -> Optional[str]:
+        return self.cerebras_api_key
+    
+    @property
+    def EXA_API_KEY(self) -> Optional[str]:
+        return self.exa_api_key
     
     # Future: Database, Redis, External APIs
     # database_url: str = ""
