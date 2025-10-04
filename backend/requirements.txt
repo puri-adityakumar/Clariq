@@ -11,6 +11,11 @@ appwrite
 exa-py
 cerebras-cloud-sdk
 
+# Voice Agent Services (Phase 3-4)
+livekit-agents
+livekit-agents[deepgram,silero,openai]
+livekit-api
+
 # Development and testing
 pytest
 pytest-asyncio

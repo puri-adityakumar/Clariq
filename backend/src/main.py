@@ -1,5 +1,5 @@
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, HTTPException, Request, Query
+from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.exceptions import RequestValidationError
 from datetime import datetime
 import sys
@@ -19,6 +19,10 @@ from core.config import get_settings
 # API router imports
 from api.auth import router as auth_router
 from api.research import router as research_router
+from api.voice import router as voice_router
+
+# Voice interface import
+from services.voice_interface import voice_agent_interface
 
 settings = get_settings()
 
@@ -84,6 +88,13 @@ def create_app() -> FastAPI:
     # Register API routes
     app.include_router(auth_router)
     app.include_router(research_router)
+    app.include_router(voice_router)
+    
+    # Add voice agent public interface
+    @app.get("/voice-agent", include_in_schema=False)
+    async def voice_agent_page(request: Request, session: str = Query(...), token: str = Query(...)):
+        """Public voice agent interface for users."""
+        return await voice_agent_interface(request, session, token)
     
     return app
 

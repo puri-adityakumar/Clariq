@@ -20,10 +20,18 @@ class Settings(BaseSettings):
     appwrite_api_key: Optional[str] = None  # Server API key for backend operations
     appwrite_database_id: str = "clariq_research"
     appwrite_research_collection_id: str = "research_jobs"
+    appwrite_voice_collection_id: str = "voice_sales_sessions"
+    appwrite_transcript_bucket_id: str = "voice_transcripts"
     
     # External API Keys (for research features)
     cerebras_api_key: Optional[str] = None  # CLARIQ_CEREBRAS_API_KEY
     exa_api_key: Optional[str] = None  # CLARIQ_EXA_API_KEY
+    
+    # Voice Agent Configuration
+    livekit_api_key: Optional[str] = None  # CLARIQ_LIVEKIT_API_KEY
+    livekit_api_secret: Optional[str] = None  # CLARIQ_LIVEKIT_API_SECRET
+    livekit_ws_url: str = "wss://clariq-voice.livekit.cloud"  # CLARIQ_LIVEKIT_WS_URL
+    deepgram_api_key: Optional[str] = None  # CLARIQ_DEEPGRAM_API_KEY
     
     # Convenience properties for service access
     @property
@@ -33,6 +41,18 @@ class Settings(BaseSettings):
     @property
     def EXA_API_KEY(self) -> Optional[str]:
         return self.exa_api_key
+    
+    @property
+    def LIVEKIT_API_KEY(self) -> Optional[str]:
+        return self.livekit_api_key
+    
+    @property
+    def LIVEKIT_API_SECRET(self) -> Optional[str]:
+        return self.livekit_api_secret
+    
+    @property
+    def DEEPGRAM_API_KEY(self) -> Optional[str]:
+        return self.deepgram_api_key
     
     # Future: Database, Redis, External APIs
     # database_url: str = ""
