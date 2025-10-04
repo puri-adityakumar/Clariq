@@ -106,23 +106,48 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Main CTA for Research Dashboard */}
-      <div className="mb-12">
+      {/* Main CTAs */}
+      <div className="mb-12 grid gap-6 md:grid-cols-2">
+        {/* Research CTA */}
         <div className="card bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-blue-500/30">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="flex flex-col items-start justify-between gap-4">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Zap className="w-5 h-5 text-blue-400" />
                 <h2 className="heading-5 text-white">AI Market Research</h2>
               </div>
-              <p className="text-white/80 text-sm max-w-md">
+              <p className="text-white/80 text-sm">
                 Create comprehensive market research reports using our multi-agent AI system. 
                 Analyze companies, research people, and gather competitive intelligence.
               </p>
             </div>
-            <Link href="/dashboard/research">
-              <Button size="lg" className="font-semibold tracking-tight whitespace-nowrap">
+            <Link href="/dashboard/research" className="w-full">
+              <Button size="lg" className="font-semibold tracking-tight w-full">
                 Start Research
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Voice Sales Agent CTA */}
+        <div className="card bg-gradient-to-r from-green-600/20 to-emerald-600/20 border-green-500/30">
+          <div className="flex flex-col items-start justify-between gap-4">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
+                <h2 className="heading-5 text-white">Voice Sales Agent</h2>
+              </div>
+              <p className="text-white/80 text-sm">
+                Create AI voice agents that use your research data for sales conversations. 
+                Get a link to talk with your personalized voice agent.
+              </p>
+            </div>
+            <Link href="/dashboard/voice" className="w-full">
+              <Button size="lg" variant="secondary" className="font-semibold tracking-tight w-full">
+                Create Voice Agent
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
@@ -190,6 +215,11 @@ export default function DashboardPage() {
           <Link href="/dashboard/research">
             <Button variant="secondary" size="sm">
               Research Dashboard
+            </Button>
+          </Link>
+          <Link href="/dashboard/voice">
+            <Button variant="secondary" size="sm">
+              Voice Sales Agent
             </Button>
           </Link>
           <Link href="/dashboard/research" className="opacity-60 pointer-events-none">

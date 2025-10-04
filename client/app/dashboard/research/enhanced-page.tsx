@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { ResearchModal } from "../../../components/research/ResearchModal";
 import { Button } from "../../../components/ui/button";
@@ -8,10 +8,9 @@ import { useAuth } from "../../../appwrite/AuthProvider";
 import { useAutoRefreshJobs } from "../../../lib/appwrite/useResearch-enhanced";
 import { ResearchDashboardSkeleton } from "../../../components/ui/Skeleton";
 import { useToast } from "../../../lib/useToast";
-import { ResearchAnalyticsDashboard } from "../../../components/research/ResearchAnalyticsDashboard";
 import { cn } from "../../../lib/utils";
 
-// Enhanced icons for better UI consistency
+// Icons for better visual hierarchy
 const FilterIcon = () => (
   <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -64,7 +63,7 @@ const SORT_OPTIONS = [
   { value: 'target', label: 'By Target' },
 ];
 
-export default function ResearchDashboardPage() {
+export default function EnhancedResearchDashboardPage() {
   const { user } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
@@ -85,14 +84,16 @@ export default function ResearchDashboardPage() {
     loading,
     error,
     stats,
+    pagination,
     refresh,
     deleteJob,
     retryJob,
     duplicateJob,
+    setFilters,
   } = useAutoRefreshJobs(user?.$id || null, 30000);
 
   // Apply local filtering and sorting
-  const filteredAndSortedJobs = React.useMemo(() => {
+  const filteredAndSortedJobs = useMemo(() => {
     let filtered = jobs;
 
     // Apply status filter
@@ -252,7 +253,7 @@ export default function ResearchDashboardPage() {
               className="text-white/70 hover:text-white"
             >
               <StatsIcon />
-              {showStats ? 'Hide Stats' : 'Show Stats'}
+              Stats
             </Button>
             <Button
               onClick={refresh}
@@ -274,46 +275,40 @@ export default function ResearchDashboardPage() {
           </div>
         </div>
 
-        {/* Enhanced Stats Panel */}
-        {showStats && (
-          <div className="mb-6">
-            <ResearchAnalyticsDashboard />
-          </div>
-        )}
-
-        {/* Quick Stats Bar */}
-        {stats && (
-          <div className="glass p-4 rounded-lg mb-6">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
-              <div>
-                <div className="text-lg font-bold text-white">{stats.total}</div>
+        {/* Stats Panel */}
+        {showStats && stats && (
+          <div className="glass p-6 rounded-xl mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-white">{stats.total}</div>
                 <div className="text-xs text-white/60">Total Jobs</div>
               </div>
-              <div>
-                <div className="text-lg font-bold text-green-400">{stats.completed}</div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-400">{stats.completed}</div>
                 <div className="text-xs text-white/60">Completed</div>
               </div>
-              <div>
-                <div className="text-lg font-bold text-blue-400">{stats.processing + stats.pending}</div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-400">{stats.processing + stats.pending}</div>
                 <div className="text-xs text-white/60">Active</div>
               </div>
-              <div>
-                <div className="text-lg font-bold text-red-400">{stats.failed}</div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-red-400">{stats.failed}</div>
                 <div className="text-xs text-white/60">Failed</div>
               </div>
-              <div>
-                <div className="text-lg font-bold text-white">{stats.totalSources || 0}</div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-white">{stats.totalSources || 0}</div>
                 <div className="text-xs text-white/60">Total Sources</div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Enhanced Search and Filters */}
+        {/* Search and Filters */}
         <div className="glass p-4 rounded-lg">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 relative">
+              <SearchIcon />
               <input
                 type="text"
                 placeholder="Search by target, agent, or person..."
@@ -373,7 +368,7 @@ export default function ResearchDashboardPage() {
         </div>
       </div>
 
-      {/* Enhanced Jobs List */}
+      {/* Jobs List */}
       {filteredAndSortedJobs.length === 0 ? (
         <div className="glass p-12 rounded-xl text-center">
           <div className="text-white/30 mb-4">
@@ -501,6 +496,20 @@ export default function ResearchDashboardPage() {
               </tbody>
             </table>
           </div>
+          
+          {/* Load More */}
+          {pagination.hasMore && (
+            <div className="border-t border-white/10 p-4 text-center">
+              <Button 
+                variant="ghost" 
+                onClick={() => {/* implement loadMore */}}
+                disabled={loading}
+                className="text-white/60 hover:text-white"
+              >
+                {loading ? "Loading..." : "Load More"}
+              </Button>
+            </div>
+          )}
         </div>
       )}
 
