@@ -15,6 +15,7 @@ class UserSessionMiddleware(BaseHTTPMiddleware):
             "/",
             "/health",
             "/v1/auth/test-connection",
+            "/v1/research/health",  # Research service health check
             "/favicon.ico",
         ]
         # Skip patterns for documentation and static resources

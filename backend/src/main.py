@@ -18,6 +18,7 @@ from core.config import get_settings
 
 # API router imports
 from api.auth import router as auth_router
+from api.research import router as research_router
 
 settings = get_settings()
 
@@ -82,6 +83,7 @@ def create_app() -> FastAPI:
     
     # Register API routes
     app.include_router(auth_router)
+    app.include_router(research_router)
     
     return app
 

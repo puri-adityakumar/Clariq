@@ -14,9 +14,12 @@ class Settings(BaseSettings):
     service_name: str = "clariq-backend"
     service_version: str = "0.1.0"
     
-    # Appwrite Configuration - REQUIRED for user authentication
+    # Appwrite Configuration - REQUIRED for user authentication and database
     appwrite_endpoint: str = "https://cloud.appwrite.io/v1"
     appwrite_project_id: str = ""  # Must be set via CLARIQ_APPWRITE_PROJECT_ID
+    appwrite_api_key: Optional[str] = None  # Server API key for backend operations
+    appwrite_database_id: str = "clariq_research"
+    appwrite_research_collection_id: str = "research_jobs"
     
     # External API Keys (for research features)
     cerebras_api_key: Optional[str] = None
