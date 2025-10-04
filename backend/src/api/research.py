@@ -139,9 +139,11 @@ async def execute_research_job(
         raise
     except Exception as e:
         logger.error(f"Unexpected error executing research job {job_id}: {str(e)}")
+        logger.error(f"Error type: {type(e).__name__}")
+        logger.error(f"Error details: {repr(e)}")
         raise HTTPException(
             status_code=500,
-            detail="An unexpected error occurred while starting research execution"
+            detail=f"Research execution failed: {str(e)}"
         )
 
 
