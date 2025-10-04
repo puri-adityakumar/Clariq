@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../../../components/ui/button";
 import { VoiceSalesModal } from "../../../components/voice/VoiceSalesModal";
@@ -7,51 +7,17 @@ import type { VoiceSessionData } from "../../../components/voice/VoiceSalesModal
 import { VoiceSessionCard } from "../../../components/voice/VoiceSessionCard";
 import { useAuth } from "../../../appwrite/AuthProvider";
 import { useToast } from "../../../lib/useToast";
+import { 
+  createVoiceAgent, 
+  getVoiceSessions, 
+  downloadTranscript,
+  formatDuration,
+  type VoiceSession 
+} from "../../../lib/appwrite/voice";
 
-// Mock voice session interface (will be replaced with Appwrite integration)
-interface VoiceSession {
-  id: string;
-  sessionName: string;
-  researchTarget: string;
-  status: 'pending' | 'ready' | 'active' | 'completed' | 'failed';
-  voiceAgentUrl?: string;
-  duration: number;
-  createdAt: string;
-  completedAt?: string;
-  transcriptFileId?: string;
-}
+// Mock voice session interface removed - using the real one from voice.ts
 
-// Mock data for demonstration
-const mockSessions: VoiceSession[] = [
-  {
-    id: "vs_001",
-    sessionName: "Demo call with Acme Corp",
-    researchTarget: "Acme Corporation",
-    status: "completed",
-    duration: 1845, // 30:45
-    createdAt: "2024-10-04T10:30:00Z",
-    completedAt: "2024-10-04T11:00:45Z",
-    transcriptFileId: "transcript_001",
-  },
-  {
-    id: "vs_002", 
-    sessionName: "Sales presentation prep",
-    researchTarget: "TechStart Inc",
-    status: "ready",
-    voiceAgentUrl: "https://backend.clariq.com/voice-agent/vs_002",
-    duration: 920, // 15:20
-    createdAt: "2024-10-03T14:15:00Z",
-    transcriptFileId: "transcript_002",
-  },
-  {
-    id: "vs_003",
-    sessionName: "Follow-up discussion",
-    researchTarget: "Global Solutions Ltd",
-    status: "pending",
-    duration: 0,
-    createdAt: "2024-10-02T09:00:00Z",
-  },
-];
+// No mock data - using real API calls
 
 const VoiceIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -71,15 +37,29 @@ export default function VoiceDashboardPage() {
   const { toast } = useToast();
   
   const [modalOpen, setModalOpen] = useState(false);
-  const [sessions, setSessions] = useState<VoiceSession[]>(mockSessions);
+  const [sessions, setSessions] = useState<VoiceSession[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingSessions, setLoadingSessions] = useState(true);
 
-  // Format duration as MM:SS
-  const formatDuration = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
+  const loadVoiceSessions = useCallback(async () => {
+    try {
+      setLoadingSessions(true);
+      const response = await getVoiceSessions();
+      setSessions(response.sessions);
+    } catch (error) {
+      console.error('Error loading voice sessions:', error);
+      toast.error('Failed to load voice sessions');
+    } finally {
+      setLoadingSessions(false);
+    }
+  }, [toast]);
+
+  // Load voice sessions on component mount
+  useEffect(() => {
+    if (user) {
+      loadVoiceSessions();
+    }
+  }, [user, loadVoiceSessions]);
 
   // Handle creating new voice session
   const handleCreateSession = async (data: VoiceSessionData) => {
@@ -91,48 +71,57 @@ export default function VoiceDashboardPage() {
     setLoading(true);
     
     try {
-      // TODO: Replace with actual API call to create voice session
-      const newSession: VoiceSession = {
-        id: `vs_${Date.now()}`,
-        sessionName: data.sessionName,
-        researchTarget: data.researchTarget,
-        status: 'active',
-        duration: 0,
-        createdAt: new Date().toISOString(),
-      };
-
-      // Add to sessions list
-      setSessions(prev => [newSession, ...prev]);
+      const response = await createVoiceAgent(data.researchJobId, data.sessionName);
       
-      // Navigate to voice interface
-      router.push(`/dashboard/voice/${newSession.id}`);
+      // Refresh sessions list
+      await loadVoiceSessions();
+      
+      toast.success('Voice agent created successfully!');
+      
+      // Navigate to the new session
+      router.push(`/dashboard/voice/${response.session_id}`);
       
     } catch (error) {
       console.error('Error creating voice session:', error);
-      toast.error('Failed to create voice session. Please try again.');
+      toast.error(error instanceof Error ? error.message : 'Failed to create voice session. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   // Handle viewing transcript
-  const handleViewTranscript = (sessionId: string) => {
+  const handleViewTranscript = async (sessionId: string) => {
     const session = sessions.find(s => s.id === sessionId);
-    if (session) {
-      toast.success(`Opening transcript for "${session.sessionName}"`);
-      // TODO: Implement transcript viewer or download
+    if (!session) {
+      toast.error('Session not found');
+      return;
+    }
+    
+    try {
+      await downloadTranscript(sessionId, session.session_name);
+      toast.success('Transcript downloaded successfully');
+    } catch (error) {
+      console.error('Error downloading transcript:', error);
+      toast.error('Failed to download transcript. It may not be available yet.');
     }
   };
 
   // Handle deleting session
-  const handleDeleteSession = (sessionId: string, sessionName: string) => {
+  const handleDeleteSession = async (sessionId: string, sessionName: string) => {
     const confirmDelete = confirm(
       `Are you sure you want to delete the voice session "${sessionName}"? This action cannot be undone.`
     );
     
     if (confirmDelete) {
-      setSessions(prev => prev.filter(s => s.id !== sessionId));
-      toast.success("Voice session deleted successfully");
+      try {
+        // TODO: Implement delete API call when backend supports it
+        // await deleteVoiceSession(sessionId);
+        setSessions(prev => prev.filter(s => s.id !== sessionId));
+        toast.success("Voice session deleted successfully");
+      } catch (error) {
+        console.error('Error deleting session:', error);
+        toast.error('Failed to delete session');
+      }
     }
   };
 
@@ -155,10 +144,10 @@ export default function VoiceDashboardPage() {
           
           <div className="flex items-center gap-3">
             <Button
-              onClick={() => setSessions([...mockSessions])}
+              onClick={loadVoiceSessions}
               variant="ghost"
               size="sm"
-              disabled={loading}
+              disabled={loadingSessions || loading}
               className="text-white/70 hover:text-white"
             >
               <RefreshIcon />
@@ -196,8 +185,8 @@ export default function VoiceDashboardPage() {
           </div>
           <div className="glass p-4 rounded-lg text-center">
             <div className="text-lg font-bold text-white">
-              {sessions.reduce((total, s) => total + s.duration, 0) > 0 
-                ? formatDuration(sessions.reduce((total, s) => total + s.duration, 0))
+              {sessions.reduce((total, s) => total + s.duration_seconds, 0) > 0 
+                ? formatDuration(sessions.reduce((total, s) => total + s.duration_seconds, 0))
                 : '00:00'
               }
             </div>
@@ -207,7 +196,11 @@ export default function VoiceDashboardPage() {
       </div>
 
       {/* Sessions List */}
-      {sessions.length === 0 ? (
+      {loadingSessions ? (
+        <div className="glass p-12 rounded-xl text-center">
+          <div className="text-white/60 mb-4">Loading voice sessions...</div>
+        </div>
+      ) : sessions.length === 0 ? (
         <div className="glass p-12 rounded-xl text-center">
           <div className="text-white/30 mb-4">
             <div className="h-16 w-16 mx-auto">
@@ -230,9 +223,19 @@ export default function VoiceDashboardPage() {
           {sessions.map((session) => (
             <VoiceSessionCard
               key={session.id}
-              session={session}
+              session={{
+                id: session.id,
+                sessionName: session.session_name,
+                researchTarget: 'Research Target', // TODO: Get from research job
+                status: session.status,
+                voiceAgentUrl: session.voice_agent_url,
+                duration: session.duration_seconds,
+                createdAt: session.created_at,
+                completedAt: session.completed_at,
+                transcriptFileId: session.transcript_file_id,
+              }}
               onViewTranscript={handleViewTranscript}
-              onDelete={(sessionId) => handleDeleteSession(sessionId, session.sessionName)}
+              onDelete={(sessionId) => handleDeleteSession(sessionId, session.session_name)}
             />
           ))}
         </div>

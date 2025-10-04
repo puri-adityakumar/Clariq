@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import List, Optional
 from fastapi import APIRouter, HTTPException, Depends, Query
 from fastapi.responses import FileResponse, PlainTextResponse
+from appwrite.query import Query as AppwriteQuery
 
 from core.auth import get_current_user
 from schemas.voice import (
@@ -172,15 +173,15 @@ async def get_voice_sessions(
     try:
         user_id = current_user["$id"]
         
-        # Get user's voice sessions
+        # Get user's voice sessions using proper Query builder
         sessions_result = await appwrite_service.list_documents(
             database_id=settings.appwrite_database_id,
             collection_id=settings.appwrite_voice_collection_id,
             queries=[
-                f'equal("user_id", "{user_id}")',
-                f'limit({limit})',
-                f'offset({offset})',
-                'orderDesc("$createdAt")'
+                AppwriteQuery.equal("user_id", user_id),
+                AppwriteQuery.limit(limit),
+                AppwriteQuery.offset(offset),
+                AppwriteQuery.order_desc("$createdAt")
             ]
         )
         

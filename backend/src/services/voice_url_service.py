@@ -16,7 +16,8 @@ class VoiceUrlService:
     def __init__(self):
         """Initialize the voice URL service."""
         self.settings = get_settings()
-        self.base_url = "https://your-backend-domain.com"  # Update with actual domain
+        # Use localhost for development, can be overridden via environment variable
+        self.base_url = "http://localhost:8000"  # TODO: Use env variable for production
     
     def generate_voice_agent_url(self, session_id: str, user_id: str, room_id: str) -> str:
         """

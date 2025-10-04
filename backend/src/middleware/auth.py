@@ -17,6 +17,7 @@ class UserSessionMiddleware(BaseHTTPMiddleware):
             "/v1/auth/test-connection",
             "/v1/research/health",  # Research service health check
             "/favicon.ico",
+            "/voice-agent",  # Public voice agent interface (uses token validation)
         ]
         # Skip patterns for documentation and static resources
         self.skip_patterns = [

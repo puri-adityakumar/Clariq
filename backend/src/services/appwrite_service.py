@@ -29,6 +29,7 @@ class AppwriteService:
         self.databases = Databases(self.client)
         self.database_id = settings.appwrite_database_id
         self.collection_id = settings.appwrite_research_collection_id
+        self.voice_collection_id = settings.appwrite_voice_collection_id
         
         # Log configuration status
         if self.is_configured():
@@ -154,6 +155,172 @@ class AppwriteService:
         }
         
         return await self.update_research_job(job_id, update_data)
+    
+    # Voice Collection Methods
+    
+    async def create_document(self, database_id: str, collection_id: str, document_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Create a document in any collection.
+        
+        Args:
+            database_id: Database ID
+            collection_id: Collection ID  
+            document_id: Document ID
+            data: Document data
+            
+        Returns:
+            Created document
+        """
+        try:
+            logger.info(f"Creating document {document_id} in collection {collection_id}")
+            
+            response = self.databases.create_document(
+                database_id=database_id,
+                collection_id=collection_id,
+                document_id=document_id,
+                data=data
+            )
+            
+            # Convert response to dict
+            if hasattr(response, 'dict'):
+                result = response.dict()
+            elif hasattr(response, '__dict__'):
+                result = vars(response)
+            else:
+                result = dict(response) if response else {}
+            
+            logger.info(f"Successfully created document {document_id}")
+            return result
+            
+        except AppwriteException as e:
+            logger.error(f"Failed to create document {document_id}: {e.message} (code: {e.code})")
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error creating document {document_id}: {str(e)}", exc_info=True)
+            raise
+    
+    async def get_document(self, database_id: str, collection_id: str, document_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Get a document from any collection.
+        
+        Args:
+            database_id: Database ID
+            collection_id: Collection ID
+            document_id: Document ID
+            
+        Returns:
+            Document data or None if not found
+        """
+        try:
+            logger.info(f"Fetching document {document_id} from collection {collection_id}")
+            
+            response = self.databases.get_document(
+                database_id=database_id,
+                collection_id=collection_id,
+                document_id=document_id
+            )
+            
+            # Convert response to dict
+            if hasattr(response, 'dict'):
+                result = response.dict()
+            elif hasattr(response, '__dict__'):
+                result = vars(response)
+            else:
+                result = dict(response) if response else {}
+            
+            logger.info(f"Successfully fetched document {document_id}")
+            return result
+            
+        except AppwriteException as e:
+            if e.code == 404:
+                logger.warning(f"Document {document_id} not found in {collection_id}")
+                return None
+            else:
+                logger.error(f"Failed to fetch document {document_id}: {e.message} (code: {e.code})")
+                raise
+        except Exception as e:
+            logger.error(f"Unexpected error fetching document {document_id}: {str(e)}", exc_info=True)
+            raise
+    
+    async def update_document(self, database_id: str, collection_id: str, document_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Update a document in any collection.
+        
+        Args:
+            database_id: Database ID
+            collection_id: Collection ID
+            document_id: Document ID
+            data: Update data
+            
+        Returns:
+            Updated document
+        """
+        try:
+            logger.info(f"Updating document {document_id} in collection {collection_id} with keys: {list(data.keys())}")
+            
+            response = self.databases.update_document(
+                database_id=database_id,
+                collection_id=collection_id,
+                document_id=document_id,
+                data=data
+            )
+            
+            # Convert response to dict
+            if hasattr(response, 'dict'):
+                result = response.dict()
+            elif hasattr(response, '__dict__'):
+                result = vars(response)
+            else:
+                result = dict(response) if response else {}
+            
+            logger.info(f"Successfully updated document {document_id}")
+            return result
+            
+        except AppwriteException as e:
+            logger.error(f"Failed to update document {document_id}: {e.message} (code: {e.code})")
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error updating document {document_id}: {str(e)}", exc_info=True)
+            raise
+    
+    async def list_documents(self, database_id: str, collection_id: str, queries: Optional[List[str]] = None) -> Dict[str, Any]:
+        """
+        List documents from any collection.
+        
+        Args:
+            database_id: Database ID
+            collection_id: Collection ID
+            queries: Optional queries for filtering/sorting
+            
+        Returns:
+            List response with documents and total count
+        """
+        try:
+            logger.info(f"Listing documents from collection {collection_id} with queries: {queries}")
+            
+            response = self.databases.list_documents(
+                database_id=database_id,
+                collection_id=collection_id,
+                queries=queries or []
+            )
+            
+            # Convert response to dict if it's not already
+            if hasattr(response, 'dict'):
+                result = response.dict()
+            elif hasattr(response, '__dict__'):
+                result = vars(response)
+            else:
+                result = dict(response) if response else {}
+            
+            logger.info(f"Successfully listed {len(result.get('documents', []))} documents from {collection_id}")
+            return result
+            
+        except AppwriteException as e:
+            logger.error(f"Failed to list documents from {collection_id}: {e.message} (code: {e.code})")
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error listing documents from {collection_id}: {str(e)}", exc_info=True)
+            raise
     
     def is_configured(self) -> bool:
         """
