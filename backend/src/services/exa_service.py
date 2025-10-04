@@ -5,7 +5,7 @@ Provides search and discovery functionality using Exa's API
 import logging
 from typing import List, Dict, Optional
 from exa_py import Exa
-from ..core.config import settings
+from core.config import settings
 
 logger = logging.getLogger(__name__)
 

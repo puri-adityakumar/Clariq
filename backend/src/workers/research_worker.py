@@ -64,11 +64,20 @@ async def execute_research_worker(job_id: str) -> None:
         logger.info(f"Job {job_id} status updated to processing")
         
         # Step 3: Execute research orchestrator
-        # TODO: Implement in Phase 5 with actual research agents
         logger.info(f"Starting research orchestrator for job {job_id}")
         
-        # Simulate research execution for now (remove in Phase 5)
-        research_result = await simulate_research_execution(job)
+        # Import and execute research orchestrator
+        from services.research_orchestrator import get_research_orchestrator
+        
+        orchestrator = get_research_orchestrator()
+        orchestrator_result = await orchestrator.run_multi_agent_research(job)
+        
+        # Convert to ResearchWorkerResult
+        research_result = ResearchWorkerResult(
+            markdown_report=orchestrator_result['markdown_report'],
+            source_count=orchestrator_result['source_count'],
+            metadata=orchestrator_result['metadata']
+        )
         
         # Step 4: Update job with results
         logger.info(f"Research completed for job {job_id}, updating results...")

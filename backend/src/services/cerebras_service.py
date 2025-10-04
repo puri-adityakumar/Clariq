@@ -5,7 +5,7 @@ Provides AI analysis and synthesis using Cerebras Cloud SDK
 import logging
 from typing import Optional
 from cerebras.cloud.sdk import Cerebras
-from ..core.config import settings
+from core.config import settings
 
 logger = logging.getLogger(__name__)
 

@@ -82,29 +82,26 @@ async def execute_research_job(
         # Step 0: Check rate limit
         check_research_rate_limit(user.id, "execution")
         
-        # TODO: Import and use actual Appwrite service in Phase 4.3
-        # For now, we'll simulate the validation
+        # Import Appwrite service
+        from services.appwrite_service import appwrite_service
         
         # Step 1: Validate job exists and belongs to user
-        # job = await appwrite_service.get_research_job(job_id)
-        # if not job:
-        #     raise HTTPException(status_code=404, detail="Research job not found")
-        # 
-        # if job.user_id != user.id:
-        #     raise HTTPException(status_code=404, detail="Research job not found")
-        # 
-        # # Step 2: Check job status is valid for execution
-        # if job.status not in ["pending"]:
-        #     raise HTTPException(
-        #         status_code=400, 
-        #         detail=f"Job cannot be executed. Current status: {job.status}"
-        #     )
+        job = await appwrite_service.get_research_job(job_id)
+        if not job:
+            raise HTTPException(status_code=404, detail="Research job not found")
+        
+        if job.get('user_id') != user.id:
+            raise HTTPException(status_code=404, detail="Research job not found")
+        
+        # Step 2: Check job status is valid for execution
+        if job.get('status') not in ["pending"]:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Job cannot be executed. Current status: {job.get('status')}"
+            )
         
         # Step 3: Update job status to "processing"
-        # await appwrite_service.update_research_job(job_id, {
-        #     "status": "processing",
-        #     "updated_at": datetime.utcnow().isoformat() + "Z"
-        # })
+        await appwrite_service.update_job_status(job_id, "processing")
         
         # Step 4: Queue background research task
         background_tasks.add_task(execute_research_worker, job_id)
@@ -176,26 +173,25 @@ async def get_research_status(
         # Step 0: Check rate limit
         check_research_rate_limit(user.id, "status")
         
-        # TODO: Import and use actual Appwrite service in Phase 4.3
-        # For now, we'll simulate the status check
+        # Import Appwrite service
+        from services.appwrite_service import appwrite_service
         
         # Step 1: Fetch job from Appwrite
-        # job = await appwrite_service.get_research_job(job_id)
-        # if not job:
-        #     raise HTTPException(status_code=404, detail="Research job not found")
-        # 
-        # if job.user_id != user.id:
-        #     raise HTTPException(status_code=404, detail="Research job not found")
+        job = await appwrite_service.get_research_job(job_id)
+        if not job:
+            raise HTTPException(status_code=404, detail="Research job not found")
         
-        # Simulate response data
-        current_time = datetime.utcnow().isoformat() + "Z"
+        if job.get('user_id') != user.id:
+            raise HTTPException(status_code=404, detail="Research job not found")
+        
+        # Build response data from actual job
         response_data = ResearchStatusResponse(
             job_id=job_id,
-            status="pending",  # This would come from job.status
-            progress=None,     # This would come from job.progress if we add it
-            error_message=None, # This would come from job.error_message
-            created_at=current_time,  # This would come from job.created_at
-            updated_at=current_time   # This would come from job.updated_at
+            status=job.get('status', 'pending'),
+            progress=None,  # Could add progress tracking later
+            error_message=job.get('error_message'),
+            created_at=job.get('created_at', datetime.utcnow().isoformat() + "Z"),
+            updated_at=job.get('updated_at', job.get('created_at', datetime.utcnow().isoformat() + "Z"))
         )
         
         logger.info(f"Status retrieved for job {job_id}: {response_data.status}")

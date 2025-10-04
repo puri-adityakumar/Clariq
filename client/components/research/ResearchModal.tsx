@@ -135,8 +135,8 @@ export const ResearchModal: React.FC<ResearchModalProps> = ({ open, onClose, onS
     };
     
     try {
-      // Create research job in Appwrite
-      await createResearchJob({
+      // Step 1: Create research job in Appwrite
+      const job = await createResearchJob({
         userId: user.$id,
         target: payload.target,
         enabledAgents: payload.enabledAgents,
@@ -144,6 +144,17 @@ export const ResearchModal: React.FC<ResearchModalProps> = ({ open, onClose, onS
         personLinkedin: payload.personLinkedin,
         additionalContext: payload.additionalContext,
       });
+
+      // Step 2: Trigger backend to execute the research
+      try {
+        const { apiClient } = await import("../../lib/api");
+        await apiClient.executeResearchJob(job.$id);
+        console.log(`Research job ${job.$id} triggered successfully`);
+      } catch (backendErr) {
+        console.error("Backend trigger failed:", backendErr);
+        // Job still created, but backend didn't start - user can retry later
+        toast.warning("Research job created but execution failed to start. Please retry from dashboard.");
+      }
 
       // Call the old onSubmit prop if provided (for backwards compatibility)
       await onSubmit?.(payload);
