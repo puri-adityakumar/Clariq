@@ -8,7 +8,7 @@ import { VoiceSessionCard } from "../../../components/voice/VoiceSessionCard";
 import { useAuth } from "../../../appwrite/AuthProvider";
 import { useToast } from "../../../lib/useToast";
 import { 
-  createVoiceAgent, 
+  createVoiceSession, 
   getVoiceSessions, 
   downloadTranscript,
   formatDuration,
@@ -71,12 +71,12 @@ export default function VoiceDashboardPage() {
     setLoading(true);
     
     try {
-      const response = await createVoiceAgent(data.researchJobId, data.sessionName);
+      const response = await createVoiceSession(data.sessionName);
       
       // Refresh sessions list
       await loadVoiceSessions();
       
-      toast.success('Voice agent created successfully!');
+      toast.success('Voice session created successfully!');
       
       // Navigate to the new session
       router.push(`/dashboard/voice/${response.session_id}`);
@@ -226,13 +226,11 @@ export default function VoiceDashboardPage() {
               session={{
                 id: session.id,
                 sessionName: session.session_name,
-                researchTarget: 'Research Target', // TODO: Get from research job
+                researchTarget: 'AI Voice Agent', // Generic target since no research job
                 status: session.status,
-                voiceAgentUrl: session.voice_agent_url,
                 duration: session.duration_seconds,
                 createdAt: session.created_at,
                 completedAt: session.completed_at,
-                transcriptFileId: session.transcript_file_id,
               }}
               onViewTranscript={handleViewTranscript}
               onDelete={(sessionId) => handleDeleteSession(sessionId, session.session_name)}

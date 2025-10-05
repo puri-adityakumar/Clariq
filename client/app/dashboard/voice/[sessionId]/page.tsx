@@ -1,22 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { VoiceInterface } from "../../../../components/voice/VoiceInterface";
 import { Button } from "../../../../components/ui/button";
 import { useAuth } from "../../../../appwrite/AuthProvider";
-import { useToast } from "../../../../lib/useToast";
+import { getVoiceSession, getVoiceConnectionToken, type VoiceSession } from "../../../../lib/appwrite/voice";
+import { VoiceAgentRoom } from "../../../../components/voice/VoiceAgentRoom";
 
-// Mock session interface (will be replaced with Appwrite integration)
-interface VoiceSession {
-  id: string;
-  sessionName: string;
-  researchTarget: string;
-  status: 'pending' | 'active' | 'completed' | 'failed';
-  duration: number;
-  createdAt: string;
-  completedAt?: string;
-  transcriptFileId?: string;
-  livekitWsUrl?: string;
+// Voice session interface (now using the real one from voice.ts)
+interface ConnectionInfo {
+  token: string;
+  ws_url: string;
 }
 
 const BackIcon = () => (
@@ -29,9 +22,9 @@ export default function VoiceSessionPage() {
   const { sessionId } = useParams();
   const router = useRouter();
   const { user } = useAuth();
-  const { toast } = useToast();
   
   const [session, setSession] = useState<VoiceSession | null>(null);
+  const [connectionInfo, setConnectionInfo] = useState<ConnectionInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,60 +32,30 @@ export default function VoiceSessionPage() {
   useEffect(() => {
     if (!sessionId || !user) return;
 
-    // Mock session loading (will be replaced with Appwrite query)
-    const loadSession = async () => {
+    const loadSessionAndConnect = async () => {
       try {
         setLoading(true);
         
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Mock session data
-        const mockSession: VoiceSession = {
-          id: sessionId as string,
-          sessionName: "Demo call with Acme Corp",
-          researchTarget: "Acme Corporation", 
-          status: "active",
-          duration: 0,
-          createdAt: new Date().toISOString(),
-          livekitWsUrl: "wss://mock-livekit-instance.com",
-        };
+        // Get session details
+        const sessionData = await getVoiceSession(sessionId as string);
+        setSession(sessionData);
 
-        setSession(mockSession);
+        // Get LiveKit connection token
+        const connInfo = await getVoiceConnectionToken(sessionId as string);
+        setConnectionInfo(connInfo);
+
       } catch (err) {
         console.error('Error loading session:', err);
-        setError('Failed to load voice session');
+        setError(err instanceof Error ? err.message : 'Failed to load voice session');
       } finally {
         setLoading(false);
       }
     };
 
-    loadSession();
+    loadSessionAndConnect();
   }, [sessionId, user]);
 
   // Handle ending session
-  const handleEndSession = async () => {
-    if (!session) return;
-
-    try {
-      // TODO: Call API to end session and save transcript
-      console.log('Ending session:', session.id);
-      
-      // Update session status
-      setSession(prev => prev ? { ...prev, status: 'completed', completedAt: new Date().toISOString() } : null);
-      
-      toast.success('Voice session ended successfully');
-      
-      // Navigate back to voice dashboard
-      setTimeout(() => {
-        router.push('/dashboard/voice');
-      }, 2000);
-      
-    } catch (err) {
-      console.error('Error ending session:', err);
-      toast.error('Failed to end session properly');
-    }
-  };
 
   // Loading state
   if (loading) {
@@ -159,7 +122,7 @@ export default function VoiceSessionPage() {
             </div>
             <h3 className="text-lg font-medium text-white mb-2">Session Completed</h3>
             <p className="text-white/60 text-sm mb-6">
-              Your voice session &quot;{session.sessionName}&quot; has been completed successfully.
+              Your voice session &quot;{session.session_name}&quot; has been completed successfully.
             </p>
             <div className="space-y-3">
               <Button variant="secondary" className="w-full">
@@ -176,7 +139,36 @@ export default function VoiceSessionPage() {
     );
   }
 
-  // Active session state
+  // Active session state - use VoiceAgentRoom if we have connection info
+  if (session.status === 'ready' || session.status === 'active') {
+    if (!connectionInfo) {
+      return (
+        <main className="min-h-[70vh] container max-w-7xl py-12">
+          <div className="flex items-center justify-center py-24">
+            <div className="text-center">
+              <div className="animate-pulse mb-4">
+                <div className="h-8 w-8 bg-white/20 rounded-full mx-auto"></div>
+              </div>
+              <div className="text-white/60">Getting connection token...</div>
+            </div>
+          </div>
+        </main>
+      );
+    }
+
+    // Render the actual LiveKit voice room
+    return (
+      <VoiceAgentRoom
+        sessionId={session.id}
+        sessionName={session.session_name}
+        serverUrl={connectionInfo.ws_url}
+        token={connectionInfo.token}
+        onDisconnect={() => router.push('/dashboard/voice')}
+      />
+    );
+  }
+
+  // Pending or other states
   return (
     <main className="min-h-[70vh] container max-w-7xl py-12">
       {/* Header with back button */}
@@ -191,21 +183,47 @@ export default function VoiceSessionPage() {
         </Button>
       </div>
 
-      {/* Voice Interface */}
-      <VoiceInterface
-        sessionId={session.id}
-        sessionName={session.sessionName}
-        wsUrl={session.livekitWsUrl}
-        onEndSession={handleEndSession}
-      />
+      {/* Status display for non-active sessions */}
+      <div className="glass p-8 rounded-xl text-center">
+        {session.status === 'pending' && (
+          <>
+            <div className="text-yellow-400 mb-4">
+              <svg className="h-16 w-16 mx-auto animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </div>
+            <h3 className="font-heading text-lg font-medium tracking-tight text-white mb-2">
+              Setting Up Voice Agent
+            </h3>
+            <p className="text-sm text-white/60 max-w-sm mx-auto mb-6">
+              Your AI voice agent is being prepared. This usually takes 30-60 seconds.
+            </p>
+          </>
+        )}
+        
+        {session.status === 'failed' && (
+          <>
+            <div className="text-red-400 mb-4">
+              <svg className="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="font-heading text-lg font-medium tracking-tight text-white mb-2">
+              Voice Agent Failed
+            </h3>
+            <p className="text-sm text-white/60 max-w-sm mx-auto mb-6">
+              Failed to set up the voice agent. Please try creating a new session.
+            </p>
+            <Button onClick={() => router.push('/dashboard/voice')}>
+              Back to Dashboard
+            </Button>
+          </>
+        )}
 
-      {/* Session Info */}
-      <div className="mt-8 p-4 rounded-lg border border-white/15 bg-neutral-900/60">
-        <div className="text-center text-sm text-white/60">
-          <p>Research Target: <span className="text-white">{session.researchTarget}</span></p>
-          <p className="mt-1">
-            Session started at {new Date(session.createdAt).toLocaleTimeString()}
-          </p>
+        <div className="space-y-2 text-xs text-white/40 mt-6">
+          <p>Session: {session.session_name}</p>
+          <p>Status: {session.status}</p>
+          <p>Created: {new Date(session.created_at).toLocaleString()}</p>
         </div>
       </div>
     </main>

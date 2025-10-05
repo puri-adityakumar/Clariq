@@ -1,14 +1,9 @@
-"use client";
-import React, { useState, useEffect, useRef } from "react";
-import { Button } from "../ui/button";
-import { cn } from "../../lib/utils";
+// ❌ REMOVED: Old VoiceInterface component
+// This file has been removed as part of the refactor to use LiveKit directly
+// New VoiceAgentRoom component will replace this functionality
 
-interface VoiceInterfaceProps {
-  sessionId: string;
-  sessionName: string;
-  wsUrl?: string;
-  onEndSession: () => Promise<void> | void;
-}
+// This component was using mock WebSocket connections and fake UI
+// The new approach uses @livekit/components-react for real connections
 
 type ConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'error';
 

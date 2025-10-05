@@ -9,7 +9,6 @@ interface VoiceSessionCardProps {
     sessionName: string;
     researchTarget: string;
     status: 'pending' | 'ready' | 'active' | 'completed' | 'failed';
-    voiceAgentUrl?: string;
     duration?: number;
     createdAt: string;
     completedAt?: string;
@@ -17,18 +16,6 @@ interface VoiceSessionCardProps {
   onViewTranscript?: (sessionId: string) => void;
   onDelete?: (sessionId: string) => void;
 }
-
-const CopyIcon = () => (
-  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-  </svg>
-);
-
-const ExternalLinkIcon = () => (
-  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-  </svg>
-);
 
 const DownloadIcon = () => (
   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -46,15 +33,6 @@ export const VoiceSessionCard: React.FC<VoiceSessionCardProps> = ({
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const copyToClipboard = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      // You could add a toast notification here
-    } catch (err) {
-      console.error('Failed to copy to clipboard:', err);
-    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -101,30 +79,25 @@ export const VoiceSessionCard: React.FC<VoiceSessionCardProps> = ({
         </div>
       </div>
 
-      {/* Voice Agent URL Section */}
-      {session.status === 'ready' && session.voiceAgentUrl && (
+      {/* Join Voice Session */}
+      {(session.status === 'ready' || session.status === 'active') && (
         <div className="mb-4 p-4 rounded-lg bg-green-500/10 border border-green-500/20">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-2 h-2 bg-green-400 rounded-full"></div>
             <span className="text-sm font-medium text-green-400">Voice Agent Ready</span>
           </div>
           <p className="text-xs text-white/60 mb-3">
-            Your AI voice agent is deployed and ready for conversation. Click the link below or copy it to share.
+            Your AI voice agent is ready for conversation. Click below to start talking.
           </p>
           <div className="flex gap-2">
             <Button
-              onClick={() => window.open(session.voiceAgentUrl, '_blank')}
+              onClick={() => window.location.href = `/dashboard/voice/${session.id}`}
               className="flex-1 bg-green-600 hover:bg-green-700"
             >
-              <ExternalLinkIcon />
-              Talk with Agent
-            </Button>
-            <Button
-              onClick={() => copyToClipboard(session.voiceAgentUrl!)}
-              variant="secondary"
-              size="sm"
-            >
-              <CopyIcon />
+              <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+              Join Voice Session
             </Button>
           </div>
         </div>
