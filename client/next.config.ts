@@ -1,11 +1,7 @@
 import type { NextConfig } from "next";
-import path from "path";
 
 const nextConfig: NextConfig = {
-  webpack: (config) => {
-    config.resolve.alias["@"] = path.resolve(__dirname);
-    return config;
-  },
+  // Path aliases are handled by tsconfig.json paths property
 };
 
 export default nextConfig;
