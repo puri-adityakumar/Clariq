@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks
 from fastapi.responses import JSONResponse
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 from pydantic import BaseModel
 
@@ -95,7 +95,7 @@ async def execute_research_job(
         
         # Step 5: Calculate estimated completion (10-15 minutes from now)
         estimated_completion = datetime.utcnow().replace(microsecond=0)
-        estimated_completion = estimated_completion.replace(minute=estimated_completion.minute + 12)
+        estimated_completion = estimated_completion + timedelta(minutes=12)
         estimated_completion_str = estimated_completion.isoformat() + "Z"
         
         logger.info(f"Research job {job_id} queued for execution by user {current_user['$id']}")
