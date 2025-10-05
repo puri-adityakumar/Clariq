@@ -1,0 +1,8 @@
+livekit-agents==1.2.14
+livekit-plugins-silero
+livekit-plugins-assemblyai
+livekit-plugins-cartesia
+livekit-plugins-turn-detector
+livekit-plugins-openai
+python-dotenv
+livekit-plugins-noise-cancellation

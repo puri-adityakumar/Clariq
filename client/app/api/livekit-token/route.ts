@@ -7,6 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { AccessToken } from 'livekit-server-sdk';
+import { RoomConfiguration } from '@livekit/protocol';
 
 const LIVEKIT_API_KEY = process.env.NEXT_PUBLIC_LIVEKIT_API_KEY || process.env.LIVEKIT_API_KEY;
 const LIVEKIT_API_SECRET = process.env.LIVEKIT_API_SECRET || process.env.NEXT_PUBLIC_LIVEKIT_API_SECRET;
@@ -21,7 +22,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { roomName, participantName } = body;
+    const { roomName, participantName, agentName } = body;
 
     if (!roomName || !participantName) {
       return NextResponse.json(
@@ -30,10 +31,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create access token
+    // Create access token with unique identity
+    const participantIdentity = `${participantName}_${Math.floor(Math.random() * 10_000)}`;
     const token = new AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET, {
-      identity: participantName,
+      identity: participantIdentity,
       name: participantName,
+      ttl: '15m',
     });
 
     // Grant permissions
@@ -44,6 +47,13 @@ export async function POST(request: NextRequest) {
       canSubscribe: true,
       canPublishData: true,
     });
+
+    // Add agent configuration if agent name is provided
+    if (agentName) {
+      token.roomConfig = new RoomConfiguration({
+        agents: [{ agentName }],
+      });
+    }
 
     // Generate JWT
     const jwt = await token.toJwt();

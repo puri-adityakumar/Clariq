@@ -1,81 +1,107 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRoomContext } from '@livekit/components-react';
+import { RoomEvent } from 'livekit-client';
+import useChatAndTranscription from '@/hooks/useChatAndTranscription';
+import { saveCompletedSession } from '@/lib/appwrite/voice';
 
 interface TranscriptCaptureProps {
   sessionId: string;
+  sessionName: string;
+  roomName: string;
 }
 
-interface TranscriptEntry {
-  timestamp: string;
-  participant: string;
-  text: string;
-}
-
-export function TranscriptCapture({ sessionId }: TranscriptCaptureProps) {
+/**
+ * TranscriptCapture Component - Phase 1 Implementation
+ * 
+ * This component:
+ * 1. Captures real-time transcript data from LiveKit using useChatAndTranscription hook
+ * 2. Listens for room disconnect event
+ * 3. Automatically saves the complete session to Appwrite database when the session ends
+ * 
+ * The component is invisible (renders null) but works in the background
+ */
+export function TranscriptCapture({ sessionId, sessionName, roomName }: TranscriptCaptureProps) {
   const room = useRoomContext();
-  const [transcript, setTranscript] = useState<TranscriptEntry[]>([]);
+  const { messages } = useChatAndTranscription();
+  const savedRef = useRef(false);
+  const startTimeRef = useRef<number>(Date.now());
 
   useEffect(() => {
     if (!room) return;
 
-    // For now, we'll implement a simple timer-based transcript capture
-    // In a real implementation, this would listen to actual LiveKit transcription events
-    const transcriptTimer = setInterval(() => {
-      // This is a placeholder - real implementation would capture actual conversation
-      if (Math.random() > 0.8) {
-        const mockEntry: TranscriptEntry = {
-          timestamp: new Date().toISOString(),
-          participant: Math.random() > 0.5 ? 'User' : 'Agent',
-          text: 'Sample conversation transcript will be captured here...',
-        };
-        setTranscript(prev => [...prev, mockEntry]);
+    const handleDisconnect = async () => {
+      // Only save once
+      if (savedRef.current || messages.length === 0) return;
+      savedRef.current = true;
+
+      // Calculate duration in seconds
+      const durationSeconds = Math.floor((Date.now() - startTimeRef.current) / 1000);
+
+      console.log(`📝 Session ended. Saving ${messages.length} transcript messages...`);
+
+      try {
+        // Format transcript as text
+        const transcriptText = messages
+          .map((msg) => {
+            const speaker = msg.from?.identity === 'user' ? 'You' : 'AI Agent';
+            const time = new Date(msg.timestamp).toLocaleTimeString();
+            return `[${time}] ${speaker}: ${msg.message}`;
+          })
+          .join('\n');
+
+        // Save completed session to database
+        await saveCompletedSession(
+          sessionId,
+          sessionName,
+          roomName,
+          transcriptText,
+          durationSeconds
+        );
+        console.log('✅ Session saved to database successfully');
+      } catch (error) {
+        console.error('❌ Error saving session:', error);
       }
-    }, 10000);
+    };
+
+    // Listen for room disconnect
+    room.on(RoomEvent.Disconnected, handleDisconnect);
 
     return () => {
-      clearInterval(transcriptTimer);
+      room.off(RoomEvent.Disconnected, handleDisconnect);
     };
-  }, [room]);
+  }, [room, messages, sessionId, sessionName, roomName]);
 
-  // Auto-save transcript when session ends or component unmounts
+  // Also save on component unmount (backup)
   useEffect(() => {
+    const startTime = startTimeRef.current; // Capture for cleanup
     return () => {
-      if (transcript.length > 0) {
-        saveTranscript(sessionId, transcript);
+      if (!savedRef.current && messages.length > 0) {
+        savedRef.current = true;
+        const durationSeconds = Math.floor((Date.now() - startTime) / 1000);
+        const transcriptText = messages
+          .map((msg) => {
+            const speaker = msg.from?.identity === 'user' ? 'You' : 'AI Agent';
+            const time = new Date(msg.timestamp).toLocaleTimeString();
+            return `[${time}] ${speaker}: ${msg.message}`;
+          })
+          .join('\n');
+
+        saveCompletedSession(
+          sessionId,
+          sessionName,
+          roomName,
+          transcriptText,
+          durationSeconds
+        ).catch((error) => {
+          console.error('❌ Error saving session on unmount:', error);
+        });
       }
     };
-  }, [sessionId, transcript]);
+  }, [messages, sessionId, sessionName, roomName]);
 
   return null; // This component doesn't render anything visible
-}
-
-async function saveTranscript(sessionId: string, transcript: TranscriptEntry[]) {
-  try {
-    const transcriptText = transcript
-      .map(entry => `[${new Date(entry.timestamp).toLocaleTimeString()}] ${entry.participant}: ${entry.text}`)
-      .join('\n');
-
-    // Save to backend
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/voice/sessions/${sessionId}/transcript`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        content: transcriptText,
-      }),
-    });
-
-    if (response.ok) {
-      console.log('✅ Transcript saved successfully');
-    } else {
-      console.error('❌ Failed to save transcript');
-    }
-  } catch (error) {
-    console.error('Error saving transcript:', error);
-  }
 }
 
 export default TranscriptCapture;

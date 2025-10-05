@@ -1,4 +1,4 @@
-[build-system]
+py[build-system]
 requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 

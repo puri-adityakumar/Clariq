@@ -10,7 +10,6 @@ import { useToast } from "../../../lib/useToast";
 import { 
   createVoiceSession, 
   getVoiceSessions, 
-  downloadTranscript,
   formatDuration,
   type VoiceSession 
 } from "../../../lib/appwrite/voice";
@@ -71,15 +70,14 @@ export default function VoiceDashboardPage() {
     setLoading(true);
     
     try {
+      // Generate session ID and connection details (no database yet)
       const response = await createVoiceSession(data.sessionName);
       
-      // Refresh sessions list
-      await loadVoiceSessions();
+      toast.success('Voice session ready! Connecting...');
       
-      toast.success('Voice session created successfully!');
-      
-      // Navigate to the new session
-      router.push(`/dashboard/voice/${response.session_id}`);
+      // Navigate to the session with connection details in state
+      // Session will be saved to database AFTER it completes
+      router.push(`/dashboard/voice/${response.session_id}?name=${encodeURIComponent(data.sessionName)}`);
       
     } catch (error) {
       console.error('Error creating voice session:', error);
@@ -89,7 +87,7 @@ export default function VoiceDashboardPage() {
     }
   };
 
-  // Handle viewing transcript
+  // Handle viewing transcript - Phase 2 will implement this
   const handleViewTranscript = async (sessionId: string) => {
     const session = sessions.find(s => s.id === sessionId);
     if (!session) {
@@ -97,13 +95,9 @@ export default function VoiceDashboardPage() {
       return;
     }
     
-    try {
-      await downloadTranscript(sessionId, session.session_name);
-      toast.success('Transcript downloaded successfully');
-    } catch (error) {
-      console.error('Error downloading transcript:', error);
-      toast.error('Failed to download transcript. It may not be available yet.');
-    }
+    // TODO: Phase 2 - Implement transcript retrieval and display
+    toast.info('Transcript viewing will be implemented in Phase 2');
+    console.log('View transcript for session:', sessionId);
   };
 
   // Handle deleting session
