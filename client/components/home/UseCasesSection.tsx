@@ -6,52 +6,52 @@ import { useState } from 'react';
 
 const useCases = [
   {
-    title: 'AI Voice Agents',
-    description: 'Autonomous sales conversations powered by research',
+    title: 'Research-Driven Voice Agents',
+    description: 'AI agents conduct informed sales conversations using research insights.',
     icon: Bot,
     benefits: [
-      '24/7 sales availability',
-      'Consistent messaging and positioning',
-      'Scalable prospect engagement',
-      'Data-driven conversation optimization'
+      '24/7 availability with context awareness',
+      'Personalized interactions based on research',
+      'Real-time transcription and RAG',
+      'Continuous learning from conversations'
     ],
-    scenario: 'Your AI voice agent calls prospects armed with comprehensive research, personalized talking points, and strategic conversation flows tailored to each individual prospect.'
+    scenario: 'AI agents leverage completed research to engage prospects in natural, insightful discussions via LiveKit voice rooms.'
   },
   {
-    title: 'Human Sales Rep Support',
-    description: 'Pre-call intelligence and meeting preparation',
+    title: 'Sales Team Preparation',
+    description: 'Pre-meeting intelligence for human representatives.',
     icon: UserRound,
     benefits: [
-      'Detailed prospect background research',
-      'Pain point identification and validation',
-      'Personalized conversation starters',
-      'Strategic recommendations and next steps'
+      'Detailed prospect and market briefs',
+      'Identified pain points and opportunities',
+      'Tailored talking points',
+      'Strategic recommendations'
     ],
-    scenario: 'Sales reps receive detailed pre-meeting briefings with prospect insights, conversation recommendations, and strategic guidance to maximize meeting effectiveness.'
+    scenario: 'Sales reps receive comprehensive research packages to prepare for high-value meetings and calls.'
   },
   {
-    title: 'Lead Qualification',
-    description: 'Automated prospect scoring and insights',
+    title: 'Market Opportunity Discovery',
+    description: 'Identify and analyze market opportunities.',
     icon: Target,
     benefits: [
-      'Intelligent lead scoring and prioritization',
-      'Automated qualification workflows',
-      'Decision-maker identification',
-      'Buying intent analysis'
+      'Trend analysis and forecasting',
+      'Competitor intelligence',
+      'Market gap identification',
+      'Opportunity scoring'
     ],
-    scenario: 'Automatically analyze and score incoming leads based on comprehensive research, helping sales teams focus their efforts on the highest-value opportunities.'
+    scenario: 'Uncover new market opportunities through AI-driven analysis of trends and competitor landscapes.'
   },
   {
-    title: 'Account Research',
-    description: 'Deep-dive analysis for key accounts',
+    title: 'Prospect Research Automation',
+    description: 'Automated deep-dive on prospects and accounts.',
     icon: Microscope,
     benefits: [
-      'Comprehensive company analysis',
-      'Competitive landscape mapping',
-      'Stakeholder identification and mapping',
-      'Strategic account planning insights'
+      'Company profile synthesis',
+      'Key stakeholder mapping',
+      'Buying signal detection',
+      'Personalized outreach strategies'
     ],
-    scenario: 'Conduct thorough research on target accounts to identify decision makers, understand organizational challenges, and develop targeted sales strategies.'
+    scenario: 'Automatically generate detailed dossiers on prospects to inform targeted sales approaches.'
   }
 ];
 
@@ -61,7 +61,7 @@ export default function UseCasesSection() {
   return (
     <section id="use-cases" className="section">
       <div className="container">
-        <motion.div 
+        <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -80,11 +80,10 @@ export default function UseCasesSection() {
             {useCases.map((useCase, index) => (
               <motion.button
                 key={index}
-                className={`w-full text-left p-5 rounded-lg transition-all duration-400 relative overflow-hidden ${
-                  activeUseCase === index 
-                    ? 'bg-white text-black shadow-[0_0_0_1px_rgba(255,255,255,0.25)]' 
+                className={`w-full text-left p-5 rounded-lg transition-all duration-400 relative overflow-hidden ${activeUseCase === index
+                    ? 'bg-white text-black shadow-[0_0_0_1px_rgba(255,255,255,0.25)]'
                     : 'glass text-foreground hover:bg-white/10'
-                }`}
+                  }`}
                 onClick={() => setActiveUseCase(index)}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.97 }}
@@ -95,9 +94,8 @@ export default function UseCasesSection() {
                   </div>
                   <div>
                     <h3 className={`heading-5 mb-1 font-heading tracking-tight ${activeUseCase === index ? 'text-black' : 'text-foreground'}`}>{useCase.title}</h3>
-                    <p className={`text-sm leading-relaxed font-body ${
-                      activeUseCase === index ? 'text-neutral-600' : 'text-muted'
-                    }`}>
+                    <p className={`text-sm leading-relaxed font-body ${activeUseCase === index ? 'text-neutral-600' : 'text-muted'
+                      }`}>
                       {useCase.description}
                     </p>
                   </div>
@@ -123,9 +121,9 @@ export default function UseCasesSection() {
                   </div>
                 );
               })()}
-              
+
               <h3 className="heading-4 mb-4 font-heading tracking-tight">{useCases[activeUseCase].title}</h3>
-              
+
               <p className="text-muted mb-6 leading-relaxed font-body">{useCases[activeUseCase].scenario}</p>
 
               <div className="mb-8">

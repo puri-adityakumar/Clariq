@@ -8,7 +8,6 @@ import { useAuth } from "@/appwrite/AuthProvider";
 import { useAutoRefreshJobs } from "@/lib/appwrite/useResearch-enhanced";
 import { ResearchDashboardSkeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/lib/useToast";
-import { ResearchAnalyticsDashboard } from "@/components/research/ResearchAnalyticsDashboard";
 import { cn } from "@/lib/utils";
 
 // Enhanced icons for better UI consistency
@@ -36,11 +35,7 @@ const RefreshIcon = () => (
   </svg>
 );
 
-const StatsIcon = () => (
-  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-  </svg>
-);
+// Removed StatsIcon and "Show Stats" toggle per request
 
 const statusOrder: Record<ResearchStatus, number> = {
   pending: 1,
@@ -74,7 +69,7 @@ export default function ResearchDashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [selectedSort, setSelectedSort] = useState("newest");
-  const [showStats, setShowStats] = useState(false);
+  // Removed showStats toggle
   
   // Job operation states
   const [operatingJobs, setOperatingJobs] = useState<Set<string>>(new Set());
@@ -246,15 +241,6 @@ export default function ResearchDashboardPage() {
           
           <div className="flex items-center gap-3">
             <Button
-              onClick={() => setShowStats(!showStats)}
-              variant="ghost"
-              size="sm"
-              className="text-white/70 hover:text-white"
-            >
-              <StatsIcon />
-              {showStats ? 'Hide Stats' : 'Show Stats'}
-            </Button>
-            <Button
               onClick={refresh}
               variant="ghost"
               size="sm"
@@ -274,12 +260,6 @@ export default function ResearchDashboardPage() {
           </div>
         </div>
 
-        {/* Enhanced Stats Panel */}
-        {showStats && (
-          <div className="mb-6">
-            <ResearchAnalyticsDashboard />
-          </div>
-        )}
 
         {/* Quick Stats Bar */}
         {stats && (

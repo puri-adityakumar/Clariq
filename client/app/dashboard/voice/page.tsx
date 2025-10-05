@@ -7,11 +7,11 @@ import type { VoiceSessionData } from "@/components/voice/VoiceSalesModal";
 import { VoiceSessionCard } from "@/components/voice/VoiceSessionCard";
 import { useAuth } from "@/appwrite/AuthProvider";
 import { useToast } from "@/lib/useToast";
-import { 
-  createVoiceSession, 
-  getVoiceSessions, 
+import {
+  createVoiceSession,
+  getVoiceSessions,
   formatDuration,
-  type VoiceSession 
+  type VoiceSession
 } from "@/lib/appwrite/voice";
 
 // Mock voice session interface removed - using the real one from voice.ts
@@ -34,11 +34,12 @@ export default function VoiceDashboardPage() {
   const { user } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
-  
+
   const [modalOpen, setModalOpen] = useState(false);
   const [sessions, setSessions] = useState<VoiceSession[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingSessions, setLoadingSessions] = useState(true);
+  const [showMaintenance, setShowMaintenance] = useState(true);
 
   const loadVoiceSessions = useCallback(async () => {
     try {
@@ -68,17 +69,17 @@ export default function VoiceDashboardPage() {
     }
 
     setLoading(true);
-    
+
     try {
       // Generate session ID and connection details (no database yet)
       const response = await createVoiceSession(data.sessionName);
-      
+
       toast.success('Voice session ready! Connecting...');
-      
+
       // Navigate to the session with connection details in state
       // Session will be saved to database AFTER it completes
       router.push(`/dashboard/voice/${response.session_id}?name=${encodeURIComponent(data.sessionName)}`);
-      
+
     } catch (error) {
       console.error('Error creating voice session:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to create voice session. Please try again.');
@@ -94,7 +95,7 @@ export default function VoiceDashboardPage() {
       toast.error('Session not found');
       return;
     }
-    
+
     // TODO: Phase 2 - Implement transcript retrieval and display
     toast.info('Transcript viewing will be implemented in Phase 2');
     console.log('View transcript for session:', sessionId);
@@ -105,7 +106,7 @@ export default function VoiceDashboardPage() {
     const confirmDelete = confirm(
       `Are you sure you want to delete the voice session "${sessionName}"? This action cannot be undone.`
     );
-    
+
     if (confirmDelete) {
       try {
         // TODO: Implement delete API call when backend supports it
@@ -135,7 +136,7 @@ export default function VoiceDashboardPage() {
               Create AI voice agents using your research data for sales conversations.
             </p>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <Button
               onClick={loadVoiceSessions}
@@ -179,7 +180,7 @@ export default function VoiceDashboardPage() {
           </div>
           <div className="glass p-4 rounded-lg text-center">
             <div className="text-lg font-bold text-white">
-              {sessions.reduce((total, s) => total + s.duration_seconds, 0) > 0 
+              {sessions.reduce((total, s) => total + s.duration_seconds, 0) > 0
                 ? formatDuration(sessions.reduce((total, s) => total + s.duration_seconds, 0))
                 : '00:00'
               }
@@ -239,6 +240,32 @@ export default function VoiceDashboardPage() {
         onClose={() => setModalOpen(false)}
         onSubmit={handleCreateSession}
       />
+
+      {showMaintenance && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/60 px-4 py-10 backdrop-blur-sm">
+          <div className="relative w-full max-w-md animate-in fade-in zoom-in-95 duration-150">
+            <div className="rounded-xl border border-white/15 bg-neutral-900/90 p-6 shadow-2xl ring-1 ring-white/10 backdrop-blur">
+              <div className="mb-6 flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="font-heading text-xl font-semibold tracking-tight text-white">Under Maintenance</h2>
+                  <p className="mt-1 text-xs text-white/60">This feature is currently under maintenance. You can still explore, but functionality may be limited.</p>
+                </div>
+                <button
+                  onClick={() => setShowMaintenance(false)}
+                  className="text-white/50 transition hover:text-white"
+                  aria-label="Close modal"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="flex justify-end">
+                <Button onClick={() => setShowMaintenance(false)}>Close</Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </main>
   );
 }

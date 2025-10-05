@@ -6,31 +6,31 @@ import { InboxIcon, Brain, Sparkles, Rocket } from 'lucide-react';
 const steps = [
   {
     number: '01',
-    title: 'Input & Discovery',
-    description: 'Provide prospect information and sales objectives. CLARIQ begins comprehensive data collection and analysis.',
+    title: 'Submit Research Query',
+    description: 'Input prospect details, markets, or opportunities to initiate async research jobs.',
     icon: InboxIcon,
-    details: 'Our system ingests prospect data, company information, and your specific sales goals to begin the intelligence gathering process.'
+    details: 'Queue research tasks via web app or API, specifying parameters for targeted intelligence gathering.'
   },
   {
     number: '02',
-    title: 'AI Research Engine',
-    description: 'Advanced AI algorithms conduct deep research across multiple data sources to build comprehensive prospect profiles.',
+    title: 'Data Collection & Search',
+    description: 'Multi-source data aggregation using Exa API for comprehensive results.',
     icon: Brain,
-    details: 'Machine learning models analyze public data, social signals, company information, and industry trends to create detailed insights.'
+    details: 'Neural search across web sources, company databases, and market data to build detailed profiles.'
   },
   {
     number: '03',
-    title: 'Intelligent Analysis',
-    description: 'Generate actionable insights, identify pain points, and create personalized conversation strategies.',
+    title: 'AI Synthesis & Analysis',
+    description: 'Cerebras-powered summarization and insight generation.',
     icon: Sparkles,
-    details: 'Our analysis engine identifies key opportunities, potential objections, and creates tailored messaging for maximum impact.'
+    details: 'Advanced LLMs process collected data to identify patterns, opportunities, and actionable insights.'
   },
   {
     number: '04',
-    title: 'Delivery & Execution',
-    description: 'Receive detailed reports and conversation guides, ready for human reps or AI voice agent integration.',
+    title: 'Deliver Actionable Briefs',
+    description: 'Generate structured reports and voice agent scripts for immediate use.',
     icon: Rocket,
-    details: 'Get comprehensive briefings, conversation scripts, and strategic recommendations delivered in your preferred format.'
+    details: 'Receive polished briefs via API or dashboard, ready for sales execution or voice integration.'
   }
 ];
 
@@ -38,7 +38,7 @@ export default function HowItWorks() {
   return (
     <section className="section">
       <div className="container">
-        <motion.div 
+        <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -59,9 +59,8 @@ export default function HowItWorks() {
             {steps.map((step, index) => (
               <motion.div
                 key={index}
-                className={`flex flex-col md:flex-row items-center gap-8 ${
-                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-                }`}
+                className={`flex flex-col md:flex-row items-center gap-8 ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+                  }`}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
@@ -71,8 +70,8 @@ export default function HowItWorks() {
                 <div className="flex-1 max-w-lg">
                   <motion.div
                     className="card"
-                    whileHover={{ 
-                      scale: 1.02, 
+                    whileHover={{
+                      scale: 1.02,
                       y: -4,
                       transition: { duration: 0.3 }
                     }}
@@ -83,7 +82,7 @@ export default function HowItWorks() {
                       </div>
                       <div className="text-2xl font-bold text-muted">{step.number}</div>
                     </div>
-                    
+
                     <h3 className="heading-4 mb-3 font-heading tracking-tight">{step.title}</h3>
                     <p className="text-muted mb-4 leading-relaxed font-body">{step.description}</p>
                     <p className="text-sm text-muted leading-relaxed">{step.details}</p>
@@ -110,7 +109,7 @@ export default function HowItWorks() {
           </div>
         </div>
 
-        <motion.div 
+        <motion.div
           className="text-center mt-16"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

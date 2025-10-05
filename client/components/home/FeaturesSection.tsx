@@ -7,27 +7,27 @@ import { useState } from 'react';
 const features = [
   {
     icon: Search,
-    title: 'Deep Research Engine',
-    description: 'Conducts comprehensive research on products and specific prospects using advanced AI algorithms.',
-    details: 'Our AI-powered research engine analyzes thousands of data points to provide you with actionable insights about your prospects and their businesses.'
+    title: 'Multi-Source Research Engine',
+    description: 'Automated data collection from multiple sources using Exa integration for comprehensive prospect insights.',
+    details: 'Neural search and company discovery powered by Exa API, analyzing thousands of data points for actionable intelligence.'
   },
   {
     icon: FileText,
-    title: 'Intelligent Report Generation',
-    description: 'Produces detailed, actionable research reports that empower sales teams with critical insights.',
-    details: 'Generate comprehensive reports that include prospect analysis, pain point identification, and tailored talking points for your sales conversations.'
+    title: 'AI-Powered Report Generation',
+    description: 'Intelligent summarization and brief creation using Cerebras AI models.',
+    details: 'State-of-the-art LLMs synthesize research into concise, decision-ready reports with key insights and recommendations.'
   },
   {
     icon: Mic,
-    title: 'Voice Agent Integration',
-    description: 'Creates customized conversation documents that power AI voice agents for autonomous sales.',
-    details: 'Seamlessly integrate with AI voice platforms to enable autonomous sales conversations powered by deep research and intelligent scripting.'
+    title: 'Voice Workflow Integration',
+    description: 'Real-time voice-enabled workflows powered by LiveKit for interactive sales sessions.',
+    details: 'Enable AI agents to conduct context-aware conversations using research insights and real-time transcription.'
   },
   {
     icon: Users,
-    title: 'Human Sales Enablement',
-    description: 'Generates pre-meeting reports that provide human sales representatives with strategic advantages.',
-    details: 'Equip your human sales team with detailed pre-call intelligence, conversation starters, and strategic recommendations for every meeting.'
+    title: 'Sales Team Enablement',
+    description: 'Comprehensive tools for human sales teams with RAG integration for continuous learning.',
+    details: 'Provide teams with research-driven briefs, conversation guides, and analytics for improved sales performance.'
   }
 ];
 
@@ -37,7 +37,7 @@ export default function FeaturesSection() {
   return (
     <section id="features" className="section">
       <div className="container">
-        <motion.div 
+        <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -61,8 +61,8 @@ export default function FeaturesSection() {
               viewport={{ once: true, margin: "-50px" }}
               onHoverStart={() => setHoveredFeature(index)}
               onHoverEnd={() => setHoveredFeature(null)}
-              whileHover={{ 
-                scale: 1.02, 
+              whileHover={{
+                scale: 1.02,
                 y: -8,
                 transition: { duration: 0.3 }
               }}
@@ -72,10 +72,10 @@ export default function FeaturesSection() {
               </div>
               <h3 className="heading-5 mb-3 font-heading tracking-tight text-foreground">{feature.title}</h3>
               <p className="text-muted mb-4 font-body leading-relaxed">{feature.description}</p>
-              
+
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
-                animate={{ 
+                animate={{
                   height: hoveredFeature === index ? 'auto' : 0,
                   opacity: hoveredFeature === index ? 1 : 0
                 }}
@@ -90,7 +90,7 @@ export default function FeaturesSection() {
           ))}
         </div>
 
-        <motion.div 
+        <motion.div
           className="text-center mt-12"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

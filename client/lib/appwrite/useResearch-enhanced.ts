@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { 
-  ResearchJob, 
+import {
+  ResearchJob,
   CreateResearchRequest,
   ResearchJobFilters,
   ResearchJobStats,
@@ -33,7 +33,7 @@ export interface UseResearchJobsActions {
   archiveOldJobs: (olderThanDays?: number) => Promise<number>;
 }
 
-export interface UseResearchJobsResult extends UseResearchJobsState, UseResearchJobsActions {}
+export interface UseResearchJobsResult extends UseResearchJobsState, UseResearchJobsActions { }
 
 /**
  * Enhanced hook for managing research jobs with advanced features
@@ -240,7 +240,7 @@ export function useResearchJobs(
     if (userId) {
       refresh();
     }
-  }, [userId, state.filters]);
+  }, [userId, state.filters, refresh]);
 
   return {
     ...state,
@@ -346,9 +346,9 @@ export function useAutoRefreshJobs(
     const shouldRefresh = () => {
       // Only refresh if page is visible or background refresh is enabled
       if (!isVisible && !enabledWhenBackground) return false;
-      
+
       // Only refresh if there are active jobs
-      return result.jobs.some(job => 
+      return result.jobs.some(job =>
         job.status === 'pending' || job.status === 'processing'
       );
     };
@@ -392,7 +392,7 @@ export function useResearchAnalytics(userId: string | null) {
 
     try {
       const { jobs } = await researchService.getResearchJobs(userId, {}, 1000);
-      
+
       // Calculate daily stats for the last 30 days
       const last30Days = Array.from({ length: 30 }, (_, i) => {
         const date = new Date();
@@ -401,7 +401,7 @@ export function useResearchAnalytics(userId: string | null) {
       }).reverse();
 
       const dailyStats = last30Days.map(date => {
-        const dayJobs = jobs.filter(job => 
+        const dayJobs = jobs.filter(job =>
           job.completed_at?.startsWith(date) || job.created_at.startsWith(date)
         );
         return {
@@ -429,7 +429,7 @@ export function useResearchAnalytics(userId: string | null) {
         ? completedJobs.reduce((sum, job) => sum + (job.total_sources || 0), 0) / completedJobs.length
         : 0;
 
-      const totalFinishedJobs = jobs.filter(job => 
+      const totalFinishedJobs = jobs.filter(job =>
         job.status === 'completed' || job.status === 'failed'
       );
       const successRate = totalFinishedJobs.length > 0

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "@uiw/react-md-editor/markdown-editor.css";
 import Header from "@/components/layout/Header";
 import BackgroundFX from "@/components/layout/BackgroundFX";
 import { fontClasses } from "@/lib/fonts";

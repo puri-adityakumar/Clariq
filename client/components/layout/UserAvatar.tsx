@@ -2,10 +2,12 @@
 import React from "react";
 import { useAuth } from "@/appwrite/AuthProvider";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect, useCallback } from 'react';
 
 export default function UserAvatar() {
   const { user, logout } = useAuth();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const btnRef = useRef<HTMLButtonElement | null>(null);
@@ -57,7 +59,7 @@ export default function UserAvatar() {
           <p className="text-xs px-3 py-1 mb-1 rounded font-medium bg-white/5 border border-white/10 truncate" title={user.email}>{user.email}</p>
           <div className="h-px my-2 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
           <Link href="/dashboard" role="menuitem" onClick={close} className="block text-sm px-3 py-1.5 rounded-md hover:bg-white/10 focus:bg-white/10 focus:outline-none">Dashboard</Link>
-          <button role="menuitem" onClick={()=>{ logout(); close(); }} className="w-full text-left text-sm px-3 py-1.5 rounded-md hover:bg-red-500/15 hover:text-red-300 focus:outline-none focus:bg-red-500/15 mt-1">Sign out</button>
+          <button role="menuitem" onClick={async ()=>{ await logout(); close(); router.push('/'); }} className="w-full text-left text-sm px-3 py-1.5 rounded-md hover:bg-red-500/15 hover:text-red-300 focus:outline-none focus:bg-red-500/15 mt-1">Sign out</button>
         </div>
       )}
     </div>

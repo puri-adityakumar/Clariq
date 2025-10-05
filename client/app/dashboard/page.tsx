@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useAuth } from '@/appwrite/AuthProvider';
 import { account } from '@/appwrite/config';
-import { Pencil, ArrowRight, CheckCircle, Zap } from 'lucide-react';
+import { Pencil, ArrowRight, Search, Mic } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 
 export default function DashboardPage() {
   const { user, refresh } = useAuth();
@@ -39,6 +39,7 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-[70vh] container max-w-6xl py-20">
+      {/* Header */}
       <div className="mb-12 flex flex-col gap-3">
         <div className="flex items-center gap-3 flex-wrap">
           <h1 className="heading-2 font-heading bg-gradient-to-r from-white via-white to-white/70 bg-clip-text text-transparent tracking-tight">
@@ -55,15 +56,13 @@ export default function DashboardPage() {
             <Pencil className="w-3.5 h-3.5" />
             <span>Edit</span>
           </Button>
-          {/* <Badge variant={user?.emailVerification ? 'success' : 'warning'} size="sm">
-            {user?.emailVerification ? 'Email Verified' : 'Email Pending'}
-          </Badge> */}
         </div>
         <p className="text-muted max-w-2xl">
           Your personalized intelligence workspace. Build research flows, track jobs and manage agent outputs here.
         </p>
       </div>
 
+      {/* Edit name modal */}
       {isEditingName && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="card w-full max-w-md px-6 py-6">
@@ -106,25 +105,25 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Main CTAs */}
+      {/* Primary actions - uniform cards */}
       <div className="mb-12 grid gap-6 md:grid-cols-2">
         {/* Research CTA */}
         <div className="card bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-blue-500/30">
-          <div className="flex flex-col items-start justify-between gap-4">
+          <div className="flex h-full min-h-[220px] flex-col justify-between gap-5">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-blue-400" />
+                <Search className="w-5 h-5 text-blue-400" strokeWidth={1.5} />
                 <h2 className="heading-5 text-white">AI Market Research</h2>
               </div>
               <p className="text-white/80 text-sm">
-                Create comprehensive market research reports using our multi-agent AI system. 
+                Create comprehensive market research reports using our multi-agent AI system.
                 Analyze companies, research people, and gather competitive intelligence.
               </p>
             </div>
             <Link href="/dashboard/research" className="w-full">
-              <Button size="lg" className="font-semibold tracking-tight w-full">
+              <Button size="lg" className="w-full font-semibold tracking-tight">
                 Start Research
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
           </div>
@@ -132,82 +131,27 @@ export default function DashboardPage() {
 
         {/* Voice Sales Agent CTA */}
         <div className="card bg-gradient-to-r from-green-600/20 to-emerald-600/20 border-green-500/30">
-          <div className="flex flex-col items-start justify-between gap-4">
+          <div className="flex h-full min-h-[220px] flex-col justify-between gap-5">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                </svg>
+                <Mic className="h-5 w-5 text-green-400" strokeWidth={1.5} />
                 <h2 className="heading-5 text-white">Voice Sales Agent</h2>
               </div>
               <p className="text-white/80 text-sm">
-                Create AI voice agents that use your research data for sales conversations. 
+                Create AI voice agents that use your research data for sales conversations.
                 Get a link to talk with your personalized voice agent.
               </p>
             </div>
             <Link href="/dashboard/voice" className="w-full">
-              <Button size="lg" variant="secondary" className="font-semibold tracking-tight w-full">
+              <Button size="lg" className="w-full font-semibold tracking-tight">
                 Create Voice Agent
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
           </div>
         </div>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
-        <div className="card">
-          <h2 className="heading-5 mb-4 flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-green-400" />
-            Features Ready
-          </h2>
-          <ul className="text-sm space-y-3 text-white/80">
-            <li className="flex items-start gap-2">
-              <CheckCircle className="mt-0.5 h-4 w-4 text-green-400 flex-shrink-0" />
-              <span>Multi-agent research system with 4 specialized agents</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <CheckCircle className="mt-0.5 h-4 w-4 text-green-400 flex-shrink-0" />
-              <span>Real-time job tracking and status updates</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <CheckCircle className="mt-0.5 h-4 w-4 text-green-400 flex-shrink-0" />
-              <span>Professional markdown reports with download/copy</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <CheckCircle className="mt-0.5 h-4 w-4 text-green-400 flex-shrink-0" />
-              <span>User authentication and data security</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <CheckCircle className="mt-0.5 h-4 w-4 text-green-400 flex-shrink-0" />
-              <span>Toast notifications and error handling</span>
-            </li>
-          </ul>
-        </div>
-        
-        <div className="card">
-          <h2 className="heading-5 mb-4">Available Research Agents</h2>
-          <div className="space-y-3">
-            <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-              <h3 className="text-sm font-medium text-white mb-1">Company Discovery</h3>
-              <p className="text-xs text-white/60">Analyze company profiles, products, and business model</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-              <h3 className="text-sm font-medium text-white mb-1">Person Research</h3>
-              <p className="text-xs text-white/60">Research key people with LinkedIn and talking points</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-              <h3 className="text-sm font-medium text-white mb-1">Market Analysis</h3>
-              <p className="text-xs text-white/60">Market trends, size, and growth opportunities</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-              <h3 className="text-sm font-medium text-white mb-1">Competitor Research</h3>
-              <p className="text-xs text-white/60">Competitive landscape and positioning analysis</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      
       {/* Quick Links */}
       <div className="mt-12 pt-8 border-t border-white/10">
         <h3 className="text-sm font-medium text-white/80 mb-4">Quick Links</h3>

@@ -11,35 +11,34 @@ export default function CallToAction() {
       </div>
 
       <div className="container relative z-10">
-        <motion.div 
+        <motion.div
           className="text-center max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true, margin: "-100px" }}
         >
-          <motion.h2 
+          <motion.h2
             className="heading-2 mb-6 font-heading"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
             viewport={{ once: true }}
           >
-            Ready to Transform Your Sales Process?
+            Ready to Revolutionize Your Sales Research?
           </motion.h2>
-          
-          <motion.p 
+
+          <motion.p
             className="text-lg md:text-xl text-muted mb-10 max-w-2xl mx-auto leading-relaxed font-body"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            Join forward-thinking sales teams who are already using CLARIQ to close more deals 
-            with intelligent research and AI-powered sales enablement.
+            Experience AI-powered insights that help you close smarter, faster, and with confidence. Automate research and empower your team with Clariq.
           </motion.p>
 
-          <motion.div 
+          <motion.div
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -54,7 +53,7 @@ export default function CallToAction() {
             >
               Request Demo
             </motion.a>
-            
+
             <motion.a
               href="mailto:info@clariq.ai"
               className="btn btn-secondary btn-lg w-full sm:w-auto"
@@ -66,7 +65,7 @@ export default function CallToAction() {
           </motion.div>
 
           {/* Trust indicators */}
-          <motion.div 
+          <motion.div
             className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -88,7 +87,7 @@ export default function CallToAction() {
           </motion.div>
 
           {/* Contact alternatives */}
-          <motion.div 
+          <motion.div
             className="mt-12 pt-8 border-t border-gray-800"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -97,22 +96,22 @@ export default function CallToAction() {
           >
             <p className="text-muted mb-4">Prefer to reach out directly?</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center text-sm">
-              <a 
-                href="mailto:hello@clariq.ai" 
+              <a
+                href="mailto:hello@clariq.ai"
                 className="text-muted hover:text-foreground transition-colors"
               >
                 hello@clariq.ai
               </a>
               <div className="hidden sm:block text-muted/40">•</div>
-              <a 
-                href="#documentation" 
+              <a
+                href="#documentation"
                 className="text-muted hover:text-foreground transition-colors"
               >
                 View Documentation
               </a>
               <div className="hidden sm:block text-muted/40">•</div>
-              <a 
-                href="#support" 
+              <a
+                href="#support"
                 className="text-muted hover:text-foreground transition-colors"
               >
                 Get Support

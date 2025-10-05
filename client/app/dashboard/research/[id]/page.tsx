@@ -1,8 +1,9 @@
 "use client";
 import React, { useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
-import ReactMarkdown, { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
+import ReactMarkdown, { Components } from "react-markdown";
+import { Clipboard, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/research/StatusBadge";
 import { useResearchJob } from "@/lib/appwrite/useResearch";
@@ -10,6 +11,8 @@ import { useAuth } from "@/appwrite/AuthProvider";
 import { ReportViewerSkeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/lib/useToast";
 import { cn } from "@/lib/utils";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 export default function ResearchReportPage() {
   const params = useParams();
@@ -17,7 +20,7 @@ export default function ResearchReportPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const id = params?.id as string;
-  
+
   // Use the research job hook to fetch and manage the job
   const { job, loading, error } = useResearchJob(id);
 
@@ -34,18 +37,18 @@ export default function ResearchReportPage() {
     return job.user_id === user.$id;
   }, [user, job]);
 
+  // Restore handleCopy and handleDownload
   const handleCopy = async () => {
     if (!job?.results) {
       toast.error("No content to copy");
       return;
     }
-    
     try {
       await navigator.clipboard.writeText(job.results);
       toast.success("Report copied to clipboard");
     } catch (err) {
-      console.error('Failed to copy to clipboard:', err);
-      toast.error("Failed to copy to clipboard");
+      console.error('Failed to copy:', err);
+      toast.error("Failed to copy");
     }
   };
 
@@ -54,32 +57,18 @@ export default function ResearchReportPage() {
       toast.error("No content to download");
       return;
     }
-    
     try {
-      // Create enhanced markdown content with metadata
-      const timestamp = new Date().toISOString();
-      const metadata = `---\ntitle: Research Report - ${job.target}\ngenerated: ${timestamp}\nsources: ${job.total_sources ?? 0}\nstatus: ${job.status}\n---\n\n`;
-      const fullContent = metadata + job.results;
-      
-      const blob = new Blob([fullContent], { type: "text/markdown" });
+      const blob = new Blob([job.results], { type: "text/markdown" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      
-      // Create a cleaner filename
-      const cleanTarget = job.target.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
-      const dateStr = new Date(job.created_at).toISOString().split('T')[0];
-      a.download = `research-${cleanTarget}-${dateStr}.md`;
-      
       a.href = url;
-      document.body.appendChild(a);
+      a.download = `${job.target.replace(/\s+/g, '-').toLowerCase()}-report.md`;
       a.click();
-      a.remove();
       URL.revokeObjectURL(url);
-      
-      toast.success("Report downloaded successfully");
+      toast.success("Downloaded successfully");
     } catch (err) {
-      console.error('Failed to download report:', err);
-      toast.error("Failed to download report");
+      console.error('Failed to download:', err);
+      toast.error("Failed to download");
     }
   };
 
@@ -139,27 +128,37 @@ export default function ResearchReportPage() {
           )}
 
           {job.status === 'completed' && job.results && (
-            <div className="prose prose-invert max-w-none text-white prose-headings:font-heading prose-headings:tracking-tight prose-p:leading-relaxed prose-headings:text-white prose-strong:text-white prose-code:text-white/90">
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  code({ className, children, ...props }) {
-                    const content = String(children);
-                    const isMultiline = /\n/.test(content);
-                    const base = "rounded-lg border border-white/10 bg-neutral-900/80 p-4 text-xs overflow-x-auto";
-                    if (isMultiline) {
-                      return (
-                        <pre className={cn(base, className)}>
-                          <code {...props}>{children}</code>
-                        </pre>
-                      );
+            <div className="glass rounded-xl border border-white/10 p-6">
+              <div className="flex justify-end mb-4 gap-2">
+                <Button variant="ghost" size="icon" onClick={handleCopy} title="Copy to clipboard">
+                  <Clipboard className="h-4 w-4 text-white/80 hover:text-white" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={handleDownload} title="Download Markdown">
+                  <Download className="h-4 w-4 text-white/80 hover:text-white" />
+                </Button>
+              </div>
+              <div className="prose prose-invert prose-xl max-w-none text-white/90 prose-headings:font-heading prose-headings:tracking-tight prose-headings:text-white prose-a:text-blue-400 prose-a:hover:text-blue-300 prose-blockquote:border-l-4 prose-blockquote:border-blue-500/50 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-white/80 prose-pre:bg-neutral-900/50 prose-pre:p-0 prose-code:before:content-none prose-code:after:content-none prose-li:marker:text-white/60">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    code({ className, children, ...props }) {
+                      const content = String(children).trim();
+                      const isMultiline = content.includes('\n');
+                      if (isMultiline) {
+                        const match = /language-(\w+)/.exec(className || '');
+                        return (
+                          <SyntaxHighlighter language={match ? match[1] : 'text'} style={oneDark} className="rounded-lg overflow-x-auto text-sm">
+                            {content}
+                          </SyntaxHighlighter>
+                        );
+                      }
+                      return <code className={cn("rounded bg-white/10 px-1.5 py-0.5 text-sm", className)} {...props}>{children}</code>;
                     }
-                    return <code className={cn("rounded bg-white/10 px-1.5 py-0.5 text-[11px]", className)} {...props}>{children}</code>;
-                  }
-                } as Components}
-              >
-                {job.results}
-              </ReactMarkdown>
+                  } as Components}
+                >
+                  {job.results}
+                </ReactMarkdown>
+              </div>
             </div>
           )}
 
@@ -170,30 +169,18 @@ export default function ResearchReportPage() {
             </div>
           )}
 
-          {job.status === 'completed' && (
-            <div className="flex flex-wrap gap-3 pt-4">
-              <Button onClick={handleDownload} variant="secondary" disabled={!job.results}>
-                Download Markdown
-              </Button>
-              <Button onClick={handleCopy} variant="secondary" disabled={!job.results}>
-                Copy to Clipboard
-              </Button>
-              <Button variant="secondary" disabled>
-                Export PDF (Soon)
-              </Button>
-            </div>
-          )}
+          {/* Actions moved to the editor header when completed */}
 
           {(job.status === 'pending' || job.status === 'processing') && (
             <div className="flex flex-wrap gap-3 pt-4">
-              <Button 
-                onClick={() => router.push('/dashboard/research')} 
+              <Button
+                onClick={() => router.push('/dashboard/research')}
                 variant="secondary"
               >
                 Back to Dashboard
               </Button>
-              <Button 
-                onClick={() => window.location.reload()} 
+              <Button
+                onClick={() => window.location.reload()}
                 variant="outline"
               >
                 Refresh Status

@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/appwrite/AuthProvider';
 import { sendEmailOtp, createEmailSession } from '@/appwrite/auth';
 
-export default function SignInPage() {
+function SignInContent() {
   const router = useRouter();
-  const { refresh } = useAuth();
+  const searchParams = useSearchParams();
+  const { user, refresh } = useAuth();
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
   const [phrase, setPhrase] = useState<string | undefined>('');
@@ -17,6 +18,14 @@ export default function SignInPage() {
   const [error, setError] = useState<string | null>(null);
   const [sessionInfo, setSessionInfo] = useState<Record<string, unknown> | null>(null);
   const [usePhrase, setUsePhrase] = useState(true);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      const redirect = searchParams.get('redirect') || '/dashboard';
+      router.push(redirect);
+    }
+  }, [user, router, searchParams]);
 
   async function handleRequest(e: React.FormEvent) {
     e.preventDefault();
@@ -41,7 +50,8 @@ export default function SignInPage() {
       const session = await createEmailSession(userId, secret);
       setSessionInfo(session as unknown as Record<string, unknown>);
       await refresh();
-      router.push('/dashboard');
+      const redirect = searchParams.get('redirect') || '/dashboard';
+      router.push(redirect);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to verify code';
       setError(message);
@@ -59,14 +69,14 @@ export default function SignInPage() {
             <p className="text-center text-muted font-body text-sm">Enter your email and we&apos;ll send you a 6-digit code.</p>
             <div className="space-y-2">
               <label className="block text-xs tracking-wide uppercase font-medium text-muted">Email</label>
-              <input value={email} onChange={e=>setEmail(e.target.value)} type="email" required className="w-full px-4 py-2.5 rounded-md bg-white/5 border border-white/15 focus:border-white/40 outline-none transition-colors text-sm" placeholder="you@example.com" />
+              <input value={email} onChange={e => setEmail(e.target.value)} type="email" required className="w-full px-4 py-2.5 rounded-md bg-white/5 border border-white/15 focus:border-white/40 outline-none transition-colors text-sm" placeholder="you@example.com" />
             </div>
             <label className="flex items-center gap-2 text-xs text-muted">
-              <input type="checkbox" checked={usePhrase} onChange={e=>setUsePhrase(e.target.checked)} className="accent-current" />
+              <input type="checkbox" checked={usePhrase} onChange={e => setUsePhrase(e.target.checked)} className="accent-current" />
               Enable security phrase
             </label>
             {error && <p className="text-xs text-red-400">{error}</p>}
-            <button disabled={loading} type="submit" className="btn btn-primary btn-lg w-full disabled:opacity-50">{loading? 'Sending...' : 'Send Code'}</button>
+            <button disabled={loading} type="submit" className="btn btn-primary btn-lg w-full disabled:opacity-50">{loading ? 'Sending...' : 'Send Code'}</button>
           </form>
         )}
         {step === 'verify' && !sessionInfo && (
@@ -81,12 +91,12 @@ export default function SignInPage() {
             )}
             <div className="space-y-2">
               <label className="block text-xs tracking-wide uppercase font-medium text-muted">6-Digit Code</label>
-              <input value={secret} onChange={e=>setSecret(e.target.value)} inputMode="numeric" pattern="[0-9]*" maxLength={6} required className="tracking-widest text-center font-mono text-lg w-full px-4 py-2.5 rounded-md bg-white/5 border border-white/15 focus:border-white/40 outline-none transition-colors" placeholder="••••••" />
+              <input value={secret} onChange={e => setSecret(e.target.value)} inputMode="numeric" pattern="[0-9]*" maxLength={6} required className="tracking-widest text-center font-mono text-lg w-full px-4 py-2.5 rounded-md bg-white/5 border border-white/15 focus:border-white/40 outline-none transition-colors" placeholder="••••••" />
             </div>
             {error && <p className="text-xs text-red-400">{error}</p>}
             <div className="flex gap-3">
-              <button onClick={()=>{setStep('request'); setSecret('');}} type="button" className="btn btn-ghost flex-1">Back</button>
-              <button disabled={loading || secret.length!==6} type="submit" className="btn btn-primary btn-lg flex-1 disabled:opacity-50">{loading? 'Verifying...' : 'Verify & Sign In'}</button>
+              <button onClick={() => { setStep('request'); setSecret(''); }} type="button" className="btn btn-ghost flex-1">Back</button>
+              <button disabled={loading || secret.length !== 6} type="submit" className="btn btn-primary btn-lg flex-1 disabled:opacity-50">{loading ? 'Verifying...' : 'Verify & Sign In'}</button>
             </div>
           </form>
         )}
@@ -99,3 +109,13 @@ export default function SignInPage() {
     </main>
   );
 }
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[70vh] flex items-center justify-center">Loading...</div>}>
+      <SignInContent />
+    </Suspense>
+  );
+}
+
+export const dynamic = 'force-dynamic';

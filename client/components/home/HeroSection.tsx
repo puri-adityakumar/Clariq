@@ -14,7 +14,7 @@ export default function HeroSection() {
             transition={{ duration: 0.7, ease: [0.65, 0.05, 0.36, 1] }}
             className="mb-6"
           >
-            <span className="eyebrow tracking-widest">AI Sales Intelligence Platform</span>
+            <span className="eyebrow tracking-widest">AI-Powered Sales Research Partner</span>
           </motion.div>
           <motion.h1
             className="heading-1 font-heading mb-8"
@@ -30,7 +30,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.75, ease: [0.65, 0.05, 0.36, 1] }}
           >
-            CLARIQ unifies deep prospect research, intelligent briefing generation and AI voice agent enablement into one minimalist platform engineered for focus and speed.
+            Clariq delivers clear, actionable insights on prospects, markets, and opportunities—helping you close smarter, faster, and with confidence.
           </motion.p>
           <motion.div
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-10"
@@ -68,8 +68,8 @@ export default function HeroSection() {
                   <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-white via-neutral-300 to-neutral-600 flex items-center justify-center shadow-lg shadow-black/40 ring-1 ring-white/30">
                     <div className="w-10 h-10 rounded-xl bg-neutral-900 flex items-center justify-center text-white font-brand tracking-wide text-xl">Q</div>
                   </div>
-                  <p className="font-heading text-xl text-foreground mb-2">CLARIQ Intelligence Canvas</p>
-                  <p className="text-sm text-muted max-w-md mx-auto">Unified research, analysis & conversational enablement — rendered in a frictionless, hyper-minimal interface.</p>
+                  <p className="font-heading text-xl text-foreground mb-2">CLARIQ Intelligence Platform</p>
+                  <p className="text-sm text-muted max-w-md mx-auto">AI-powered research, analysis, and voice-enabled sales intelligence in one seamless platform.</p>
                 </div>
               </div>
               <div className="pointer-events-none absolute -top-6 -left-8 w-24 h-24 rounded-full bg-white/5 blur-2xl" />

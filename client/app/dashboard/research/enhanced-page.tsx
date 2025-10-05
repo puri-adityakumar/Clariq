@@ -67,14 +67,14 @@ export default function EnhancedResearchDashboardPage() {
   const { user } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
-  
+
   // Modal and UI state
   const [modalOpen, setModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [selectedSort, setSelectedSort] = useState("newest");
   const [showStats, setShowStats] = useState(false);
-  
+
   // Job operation states
   const [operatingJobs, setOperatingJobs] = useState<Set<string>>(new Set());
 
@@ -89,7 +89,6 @@ export default function EnhancedResearchDashboardPage() {
     deleteJob,
     retryJob,
     duplicateJob,
-    setFilters,
   } = useAutoRefreshJobs(user?.$id || null, 30000);
 
   // Apply local filtering and sorting
@@ -138,7 +137,7 @@ export default function EnhancedResearchDashboardPage() {
     errorMessage: string
   ) => {
     setOperatingJobs(prev => new Set(prev).add(jobId));
-    
+
     try {
       await operation();
       toast.success(successMessage);
@@ -154,7 +153,7 @@ export default function EnhancedResearchDashboardPage() {
     }
   };
 
-  const handleRetry = (jobId: string) => 
+  const handleRetry = (jobId: string) =>
     handleJobOperation(
       jobId,
       () => retryJob(jobId),
@@ -167,7 +166,7 @@ export default function EnhancedResearchDashboardPage() {
       `Are you sure you want to delete the research job for "${target}"? This action cannot be undone.`
     );
     if (!confirmDelete) return;
-    
+
     handleJobOperation(
       jobId,
       () => deleteJob(jobId),
@@ -244,7 +243,7 @@ export default function EnhancedResearchDashboardPage() {
               Launch and monitor multi-agent market & people research jobs.
             </p>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <Button
               onClick={() => setShowStats(!showStats)}
@@ -380,7 +379,7 @@ export default function EnhancedResearchDashboardPage() {
             {jobs.length === 0 ? "No research yet" : "No jobs match your filters"}
           </h3>
           <p className="text-sm text-white/60 max-w-sm mx-auto mb-6">
-            {jobs.length === 0 
+            {jobs.length === 0
               ? "Start your first research to generate a comprehensive market & company insight report."
               : "Try adjusting your search or filter criteria to find what you're looking for."
             }
@@ -409,8 +408,8 @@ export default function EnhancedResearchDashboardPage() {
               </thead>
               <tbody>
                 {filteredAndSortedJobs.map((job, index) => (
-                  <tr 
-                    key={job.$id} 
+                  <tr
+                    key={job.$id}
                     className={cn(
                       "border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors",
                       index % 2 === 0 ? "bg-white/[0.02]" : ""
@@ -434,7 +433,7 @@ export default function EnhancedResearchDashboardPage() {
                     <td className="px-6 py-4 text-white/60 text-xs">
                       <div className="flex flex-wrap gap-1">
                         {job.enabled_agents.map(agent => (
-                          <span 
+                          <span
                             key={agent}
                             className="px-2 py-1 bg-white/10 rounded text-xs"
                           >
@@ -450,9 +449,9 @@ export default function EnhancedResearchDashboardPage() {
                       <div className="flex gap-2">
                         {job.status === "completed" ? (
                           <>
-                            <Button 
-                              size="sm" 
-                              variant="secondary" 
+                            <Button
+                              size="sm"
+                              variant="secondary"
                               onClick={() => router.push(`/dashboard/research/${job.$id}`)}
                             >
                               View Report
@@ -468,9 +467,9 @@ export default function EnhancedResearchDashboardPage() {
                             </Button>
                           </>
                         ) : job.status === "failed" ? (
-                          <Button 
-                            size="sm" 
-                            variant="secondary" 
+                          <Button
+                            size="sm"
+                            variant="secondary"
                             onClick={() => handleRetry(job.$id)}
                             disabled={operatingJobs.has(job.$id)}
                           >
@@ -479,9 +478,9 @@ export default function EnhancedResearchDashboardPage() {
                         ) : (
                           <span className="text-xs text-white/40">Processing…</span>
                         )}
-                        
-                        <Button 
-                          size="sm" 
+
+                        <Button
+                          size="sm"
                           variant="ghost"
                           onClick={() => handleDelete(job.$id, job.target)}
                           disabled={operatingJobs.has(job.$id)}
@@ -496,13 +495,13 @@ export default function EnhancedResearchDashboardPage() {
               </tbody>
             </table>
           </div>
-          
+
           {/* Load More */}
           {pagination.hasMore && (
             <div className="border-t border-white/10 p-4 text-center">
-              <Button 
-                variant="ghost" 
-                onClick={() => {/* implement loadMore */}}
+              <Button
+                variant="ghost"
+                onClick={() => {/* implement loadMore */ }}
                 disabled={loading}
                 className="text-white/60 hover:text-white"
               >
