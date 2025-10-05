@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import UserAvatar from "./UserAvatar";
-import { useAuth } from "../../appwrite/AuthProvider";
+import { useAuth } from "@/appwrite/AuthProvider";
 import { usePathname } from "next/navigation";
 
 // Only keep links that currently exist on the landing page. Removed non-functional placeholders.

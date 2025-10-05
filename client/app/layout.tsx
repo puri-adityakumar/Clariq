@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "../components/layout/Header";
-import BackgroundFX from "../components/layout/BackgroundFX";
-import { fontClasses } from "../lib/fonts";
-import { AuthProvider } from "../appwrite/AuthProvider";
-import { ToastContainer } from "../components/ui/ToastContainer";
+import Header from "@/components/layout/Header";
+import BackgroundFX from "@/components/layout/BackgroundFX";
+import { fontClasses } from "@/lib/fonts";
+import { AuthProvider } from "@/appwrite/AuthProvider";
+import { ToastContainer } from "@/components/ui/ToastContainer";
 
 export const metadata: Metadata = {
   title: "CLARIQ - AI-Powered Sales Intelligence",

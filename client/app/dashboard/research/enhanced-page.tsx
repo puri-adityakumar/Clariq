@@ -1,14 +1,14 @@
 "use client";
 import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { ResearchModal } from "../../../components/research/ResearchModal";
-import { Button } from "../../../components/ui/button";
-import StatusBadge, { ResearchStatus } from "../../../components/research/StatusBadge";
-import { useAuth } from "../../../appwrite/AuthProvider";
-import { useAutoRefreshJobs } from "../../../lib/appwrite/useResearch-enhanced";
-import { ResearchDashboardSkeleton } from "../../../components/ui/Skeleton";
-import { useToast } from "../../../lib/useToast";
-import { cn } from "../../../lib/utils";
+import { ResearchModal } from "@/components/research/ResearchModal";
+import { Button } from "@/components/ui/button";
+import StatusBadge, { ResearchStatus } from "@/components/research/StatusBadge";
+import { useAuth } from "@/appwrite/AuthProvider";
+import { useAutoRefreshJobs } from "@/lib/appwrite/useResearch-enhanced";
+import { ResearchDashboardSkeleton } from "@/components/ui/Skeleton";
+import { useToast } from "@/lib/useToast";
+import { cn } from "@/lib/utils";
 
 // Icons for better visual hierarchy
 const FilterIcon = () => (

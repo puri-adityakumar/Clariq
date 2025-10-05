@@ -1,5 +1,6 @@
 "use client";
-import { useAuth } from "../../appwrite/AuthProvider";
+import React from "react";
+import { useAuth } from "@/appwrite/AuthProvider";
 import Link from "next/link";
 import { useState, useRef, useEffect, useCallback } from 'react';
 

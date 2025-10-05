@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import { useAuth } from "../../appwrite/AuthProvider";
-import { useToast } from "../../lib/useToast";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/appwrite/AuthProvider";
+import { useToast } from "@/lib/useToast";
 
 interface VoiceSalesModalProps {
   open: boolean;

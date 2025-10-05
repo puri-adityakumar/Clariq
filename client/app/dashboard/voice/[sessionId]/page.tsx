@@ -1,10 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
-import { Button } from "../../../../components/ui/button";
-import { useAuth } from "../../../../appwrite/AuthProvider";
-import { generateLiveKitToken } from "../../../../lib/appwrite/voice";
-import { VoiceAgentRoom } from "../../../../components/voice/VoiceAgentRoom";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/appwrite/AuthProvider";
+import { generateLiveKitToken } from "@/lib/appwrite/voice";
+import { VoiceAgentRoom } from "@/components/voice/VoiceAgentRoom";
 
 // Voice session interface (simplified for active sessions)
 interface ConnectionInfo {

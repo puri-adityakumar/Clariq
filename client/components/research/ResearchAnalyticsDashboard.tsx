@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { useResearchAnalytics } from "../../lib/appwrite/useResearch-enhanced";
-import { useAuth } from "../../appwrite/AuthProvider";
-import { cn } from "../../lib/utils";
+import { useResearchAnalytics } from "@/lib/appwrite/useResearch-enhanced";
+import { useAuth } from "@/appwrite/AuthProvider";
+import { cn } from "@/lib/utils";
 
 // Chart data types
 interface DailyStatsItem {

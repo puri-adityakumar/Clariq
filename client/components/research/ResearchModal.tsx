@@ -1,11 +1,11 @@
 "use client";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Button } from "../ui/button";
-import { cn } from "../../lib/utils";
-import { useAuth } from "../../appwrite/AuthProvider";
-import { createResearchJob } from "../../lib/appwrite/research";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/appwrite/AuthProvider";
+import { createResearchJob } from "@/lib/appwrite/research";
 import { useRouter } from "next/navigation";
-import { useToast } from "../../lib/useToast";
+import { useToast } from "@/lib/useToast";
 
 interface ResearchModalProps {
   open: boolean;
@@ -147,7 +147,7 @@ export const ResearchModal: React.FC<ResearchModalProps> = ({ open, onClose, onS
 
       // Step 2: Trigger backend to execute the research
       try {
-        const { apiClient } = await import("../../lib/api");
+        const { apiClient } = await import("@/lib/api");
         await apiClient.executeResearchJob(job.$id);
         console.log(`Research job ${job.$id} triggered successfully`);
       } catch (backendErr) {

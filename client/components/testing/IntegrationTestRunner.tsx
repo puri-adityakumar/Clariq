@@ -7,15 +7,15 @@
 
 "use client";
 import React, { useState } from 'react';
-import { Button } from '../ui/button';
-import { useAuth } from '../../appwrite/AuthProvider';
-import { useToast } from '../../lib/useToast';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/appwrite/AuthProvider';
+import { useToast } from '@/lib/useToast';
 import { 
   createResearchJob, 
   getResearchJobs, 
   getResearchJob,
   CreateResearchRequest 
-} from '../../lib/appwrite/research';
+} from '@/lib/appwrite/research';
 
 interface TestResult {
   test: string;

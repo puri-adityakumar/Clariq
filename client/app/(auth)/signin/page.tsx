@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../../../appwrite/AuthProvider';
-import { sendEmailOtp, createEmailSession } from '../../../appwrite/auth';
+import { useAuth } from '@/appwrite/AuthProvider';
+import { sendEmailOtp, createEmailSession } from '@/appwrite/auth';
 
 export default function SignInPage() {
   const router = useRouter();

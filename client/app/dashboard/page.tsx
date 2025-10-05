@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from 'react';
-import { useAuth } from '../../appwrite/AuthProvider';
-import { account } from '../../appwrite/config';
+import { useAuth } from '@/appwrite/AuthProvider';
+import { account } from '@/appwrite/config';
 import { Pencil, ArrowRight, CheckCircle, Zap } from 'lucide-react';
-import { Button } from '../../components/ui/button';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 export default function DashboardPage() {

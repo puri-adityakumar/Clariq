@@ -1,6 +1,6 @@
 import React from "react";
-import Badge from "../ui/badge";
-import { cn } from "../../lib/utils";
+import Badge from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 export type ResearchStatus = "pending" | "processing" | "completed" | "failed";
 

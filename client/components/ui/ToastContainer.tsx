@@ -1,8 +1,8 @@
 "use client";
 import React from 'react';
-import { useToast } from '../../lib/useToast';
-import { cn } from '../../lib/utils';
-import { Toast, ToastType } from '../../lib/toast';
+import { useToast } from '@/lib/useToast';
+import { cn } from '@/lib/utils';
+import { Toast, ToastType } from '@/lib/toast';
 
 const toastStyles: Record<ToastType, string> = {
   success: 'bg-green-600 border-green-500 text-white',

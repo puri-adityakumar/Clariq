@@ -3,13 +3,13 @@ import React, { useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import ReactMarkdown, { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Button } from "../../../../components/ui/button";
-import StatusBadge from "../../../../components/research/StatusBadge";
-import { useResearchJob } from "../../../../lib/appwrite/useResearch";
-import { useAuth } from "../../../../appwrite/AuthProvider";
-import { ReportViewerSkeleton } from "../../../../components/ui/Skeleton";
-import { useToast } from "../../../../lib/useToast";
-import { cn } from "../../../../lib/utils";
+import { Button } from "@/components/ui/button";
+import StatusBadge from "@/components/research/StatusBadge";
+import { useResearchJob } from "@/lib/appwrite/useResearch";
+import { useAuth } from "@/appwrite/AuthProvider";
+import { ReportViewerSkeleton } from "@/components/ui/Skeleton";
+import { useToast } from "@/lib/useToast";
+import { cn } from "@/lib/utils";
 
 export default function ResearchReportPage() {
   const params = useParams();

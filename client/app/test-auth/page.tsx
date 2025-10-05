@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from 'react';
-import { useAuth } from '../../appwrite/AuthProvider';
-import { apiClient } from '../../lib/api';
-import { Button } from '../../components/ui/button';
-import Badge from '../../components/ui/badge';
+import { useAuth } from '@/appwrite/AuthProvider';
+import { apiClient } from '@/lib/api';
+import { Button } from '@/components/ui/button';
+import Badge from '@/components/ui/badge';
 
 interface ApiEnvelope<T = unknown> { data?: T; message?: string; }
 interface UserAuthData {

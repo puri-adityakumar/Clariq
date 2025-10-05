@@ -1,18 +1,18 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "../../../components/ui/button";
-import { VoiceSalesModal } from "../../../components/voice/VoiceSalesModal";
-import type { VoiceSessionData } from "../../../components/voice/VoiceSalesModal";
-import { VoiceSessionCard } from "../../../components/voice/VoiceSessionCard";
-import { useAuth } from "../../../appwrite/AuthProvider";
-import { useToast } from "../../../lib/useToast";
+import { Button } from "@/components/ui/button";
+import { VoiceSalesModal } from "@/components/voice/VoiceSalesModal";
+import type { VoiceSessionData } from "@/components/voice/VoiceSalesModal";
+import { VoiceSessionCard } from "@/components/voice/VoiceSessionCard";
+import { useAuth } from "@/appwrite/AuthProvider";
+import { useToast } from "@/lib/useToast";
 import { 
   createVoiceSession, 
   getVoiceSessions, 
   formatDuration,
   type VoiceSession 
-} from "../../../lib/appwrite/voice";
+} from "@/lib/appwrite/voice";
 
 // Mock voice session interface removed - using the real one from voice.ts
 
